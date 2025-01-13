@@ -23,7 +23,7 @@ public class Income {
         setAmount(amount);
         setAccount(account);
         setDateAdded(dateAdded);
-        this.description = description;
+        setDescription(description);
     }
 
     // Getters

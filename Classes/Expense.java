@@ -11,7 +11,7 @@ public class Expense {
     private static final ArrayList<String> CATEGORIES = new ArrayList<>(Arrays.asList(
             "Food", "Leisure & Shopping", "Transportation", "Household",
             "Family & Education", "Health & Wellness", "Other"));
-            
+
     private int ID;
     private double amount;
     private String category;
@@ -29,7 +29,7 @@ public class Expense {
         setCategory(category);
         setAccount(account);
         setDateAdded(dateAdded);
-        this.description = description;
+        setDescription(description);
     }
 
     // Getters
@@ -68,6 +68,9 @@ public class Expense {
         validateDate(dateAdded);
         this.dateAdded = dateAdded;
     }
+    public void setDescription(String description) {
+        this.description = description;
+    }
     public void setRecurrence(String recurrence) {
         if (!"N/A".equals(recurrence) && !RECUR_FREQUENCIES.contains(recurrence))
             throw new IllegalArgumentException("Invalid recurrence frequency. Allowed values: " + String.join(", ", RECUR_FREQUENCIES));
@@ -83,9 +86,7 @@ public class Expense {
             validateDate(recurrenceEndDate);
         this.recurrenceEndDate = recurrenceEndDate;
     }
-    public void setDescription(String description) {
-        this.description = description;
-    }
+
 
     // Return the values as a comma-separated string
     public String values() {

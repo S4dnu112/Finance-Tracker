@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Transfer {
+    private static final ArrayList<String> RECUR_FREQUENCIES = new ArrayList<>(Arrays.asList("daily", "weekly", "monthly", "yearly"));
     private static final ArrayList<String> ACCOUNTS = new ArrayList<>(Arrays.asList("Bank", "Cash", "Digital Wallets", "Credit Card"));
     
     private int ID;
@@ -13,6 +14,9 @@ public class Transfer {
     private String fromAccount;
     private String toAccount;
     private String dateAdded;
+    private String recurrence = "N/A";
+    private String recurrenceStartDate = "N/A";
+    private String recurrenceEndDate = "N/A";
     private String description;
 
     //constructor
@@ -22,16 +26,19 @@ public class Transfer {
         setFromAccount(fromAccount);
         setToAccount(toAccount);
         setDateAdded(dateAdded);
-        this.description = description;
+        setDescription(description);
     }
 
     //getters
-    public int getID()              { return ID; }
-    public double getAmount()       { return amount; }
-    public String getFromAccount()  { return fromAccount; }
-    public String getToAccount()    { return toAccount; }
-    public String getDateAdded()    { return dateAdded; }
-    public String getDescription()  { return description; }
+    public int getID()                      { return ID; }
+    public double getAmount()               { return amount; }
+    public String getFromAccount()          { return fromAccount; }
+    public String getToAccount()            { return toAccount; }
+    public String getDateAdded()            { return dateAdded; }
+    public String getRecurrence()           { return recurrence; }
+    public String getRecurrenceStartDate()  { return recurrenceStartDate; }
+    public String getRecurrenceEndDate()    { return recurrenceEndDate; }
+    public String getDescription()          { return description; }
 
     //setters
     public void setID(int ID){
@@ -60,6 +67,21 @@ public class Transfer {
     }
     public void setDescription(String description){
         this.description = description;
+    }
+    public void setRecurrence(String recurrence) {
+        if (!"N/A".equals(recurrence) && !RECUR_FREQUENCIES.contains(recurrence))
+            throw new IllegalArgumentException("Invalid recurrence frequency. Allowed values: " + String.join(", ", RECUR_FREQUENCIES));
+        this.recurrence = recurrence;
+    }
+    public void setRecurrenceStartDate(String recurrenceStartDate) {
+        if (!"N/A".equals(recurrence))
+            validateDate(recurrenceStartDate);
+        this.recurrenceStartDate = recurrenceStartDate;
+    }
+    public void setRecurrenceEndDate(String recurrenceEndDate) {
+        if (!"N/A".equals(recurrence))
+            validateDate(recurrenceEndDate);
+        this.recurrenceEndDate = recurrenceEndDate;
     }
 
     //Return the values as a comma-separated string

@@ -11,7 +11,7 @@ public class Expense {
     private static final ArrayList<String> CATEGORIES = new ArrayList<>(Arrays.asList(
             "Food", "Leisure & Shopping", "Transportation", "Household",
             "Family & Education", "Health & Wellness", "Other"));
-
+            
     private int ID;
     private double amount;
     private String category;

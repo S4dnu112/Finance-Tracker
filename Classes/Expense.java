@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Expense {
     private static final ArrayList<String> RECUR_FREQUENCIES = new ArrayList<>(Arrays.asList("daily", "weekly", "monthly", "yearly"));
-    private static final ArrayList<String> ACCOUNTS = new ArrayList<>(Arrays.asList("Bank", "Cash/Wallets", "Credit Card"));
+    private static final ArrayList<String> ACCOUNTS = new ArrayList<>(Arrays.asList("Bank", "Cash", "Digital Wallets", "Credit Card"));
     private static final ArrayList<String> CATEGORIES = new ArrayList<>(Arrays.asList(
             "Food", "Leisure & Shopping", "Transportation", "Household",
             "Family & Education", "Health & Wellness", "Other"));

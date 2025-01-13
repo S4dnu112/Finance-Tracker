@@ -1,4 +1,4 @@
-package finance;
+package Classes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Income {
     private static final ArrayList<String> RECUR_FREQUENCIES = new ArrayList<>(Arrays.asList("daily", "weekly", "monthly", "yearly"));
-    private static final ArrayList<String> ACCOUNTS = new ArrayList<>(Arrays.asList("Bank", "Cash/Wallets", "Credit Card"));
+    private static final ArrayList<String> ACCOUNTS = new ArrayList<>(Arrays.asList("Bank", "Cash", "Digital Wallets", "Credit Card"));
 
     private int ID;
     private double amount;
@@ -27,14 +27,14 @@ public class Income {
     }
 
     // Getters
-    public int getID() { return ID; }
-    public double getAmount() { return amount; }
-    public String getAccount() { return account; }
-    public String getDateAdded() { return dateAdded; }
-    public String getDescription() { return description; }
-    public String getRecurrence() { return recurrence; }
-    public String getRecurrenceStartDate() { return recurrenceStartDate; }
-    public String getRecurrenceEndDate() { return recurrenceEndDate; }
+    public int getID()                      { return ID; }
+    public double getAmount()               { return amount; }
+    public String getAccount()              { return account; }
+    public String getDateAdded()            { return dateAdded; }
+    public String getDescription()          { return description; }
+    public String getRecurrence()           { return recurrence; }
+    public String getRecurrenceStartDate()  { return recurrenceStartDate; }
+    public String getRecurrenceEndDate()    { return recurrenceEndDate; }
 
     // Setters
     public void setID(int ID) {

@@ -1,4 +1,4 @@
-package finance;
+package Classes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -33,15 +33,15 @@ public class Expense {
     }
 
     // Getters
-    public int getID() { return ID; }
-    public double getAmount() { return amount; }
-    public String getCategory() { return category; }
-    public String getAccount() { return account; }
-    public String getDateAdded() { return dateAdded; }
-    public String getRecurrence() { return recurrence; }
-    public String getRecurrenceStartDate() { return recurrenceStartDate; }
-    public String getRecurrenceEndDate() { return recurrenceEndDate; }
-    public String getDescription() { return description; }
+    public int getID()                      { return ID; }
+    public double getAmount()               { return amount; }
+    public String getCategory()             { return category; }
+    public String getAccount()              { return account; }
+    public String getDateAdded()            { return dateAdded; }
+    public String getRecurrence()           { return recurrence; }
+    public String getRecurrenceStartDate()  { return recurrenceStartDate; }
+    public String getRecurrenceEndDate()    { return recurrenceEndDate; }
+    public String getDescription()          { return description; }
 
     // Setters
     public void setID(int ID) {

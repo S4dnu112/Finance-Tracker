@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Transfer {
-    private static final ArrayList<String> ACCOUNTS = new ArrayList<>(Arrays.asList("Bank", "Cash/Wallets", "Credit Card"));
+    private static final ArrayList<String> ACCOUNTS = new ArrayList<>(Arrays.asList("Bank", "Cash", "Digital Wallets", "Credit Card"));
     
     private int ID;
     private double amount;
@@ -26,12 +26,12 @@ public class Transfer {
     }
 
     //getters
-    public int getID() { return ID; }
-    public double getAmount() { return amount; }
-    public String getFromAccount() { return fromAccount; }
-    public String getToAccount() { return toAccount; }
-    public String getDateAdded() { return dateAdded; }
-    public String getDescription() { return description; }
+    public int getID()              { return ID; }
+    public double getAmount()       { return amount; }
+    public String getFromAccount()  { return fromAccount; }
+    public String getToAccount()    { return toAccount; }
+    public String getDateAdded()    { return dateAdded; }
+    public String getDescription()  { return description; }
 
     //setters
     public void setID(int ID){
@@ -64,7 +64,7 @@ public class Transfer {
 
     //Return the values as a comma-separated string
     public String values(){
-        return ID + "," amount + "," + fromAccount + "," + toAccount + "," + dateAdded + "," + description;
+        return ID + "," + amount + "," + fromAccount + "," + toAccount + "," + dateAdded + "," + description;
     }
 
     //Return the keys as a comma-separated string

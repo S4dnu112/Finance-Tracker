@@ -23,14 +23,18 @@ public class Expense {
     private String description = "N/A";
 
     // Constructor
-    public Expense(int ID, double amount, String category, String account, String dateAdded, String description) {
+    public Expense(int ID, double amount, String category, String account, String dateAdded, String recurrence, String recurrenceStartDate, String recurrenceEndDate, String description) {
         setID(ID);
         setAmount(amount);
         setCategory(category);
         setAccount(account);
         setDateAdded(dateAdded);
+        setRecurrence(recurrence);
+        setRecurrenceStartDate(recurrenceStartDate);
+        setRecurrenceEndDate(recurrenceEndDate);
         setDescription(description);
     }
+
 
     // Getters
     public int getID()                      { return ID; }
@@ -68,9 +72,6 @@ public class Expense {
         validateDate(dateAdded);
         this.dateAdded = dateAdded;
     }
-    public void setDescription(String description) {
-        this.description = description;
-    }
     public void setRecurrence(String recurrence) {
         if (!"N/A".equals(recurrence) && !RECUR_FREQUENCIES.contains(recurrence))
             throw new IllegalArgumentException("Invalid recurrence frequency. Allowed values: " + String.join(", ", RECUR_FREQUENCIES));
@@ -85,6 +86,9 @@ public class Expense {
         if (!"N/A".equals(recurrence))
             validateDate(recurrenceEndDate);
         this.recurrenceEndDate = recurrenceEndDate;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 

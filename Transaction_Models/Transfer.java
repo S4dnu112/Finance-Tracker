@@ -20,12 +20,15 @@ public class Transfer {
     private String description;
 
     //constructor
-    public Transfer(int ID, double amount, String fromAccount, String toAccount, String dateAdded, String description){
+    public Transfer(int ID, double amount, String fromAccount, String toAccount, String dateAdded, String recurrence, String recurrenceStartDate, String recurrenceEndDate, String description) {
         setID(ID);
         setAmount(amount);
         setFromAccount(fromAccount);
         setToAccount(toAccount);
         setDateAdded(dateAdded);
+        setRecurrence(recurrence);
+        setRecurrenceStartDate(recurrenceStartDate);
+        setRecurrenceEndDate(recurrenceEndDate);
         setDescription(description);
     }
 
@@ -65,9 +68,6 @@ public class Transfer {
         validateDate(dateAdded);
         this.dateAdded = dateAdded;
     }
-    public void setDescription(String description){
-        this.description = description;
-    }
     public void setRecurrence(String recurrence) {
         if (!"N/A".equals(recurrence) && !RECUR_FREQUENCIES.contains(recurrence))
             throw new IllegalArgumentException("Invalid recurrence frequency. Allowed values: " + String.join(", ", RECUR_FREQUENCIES));
@@ -82,6 +82,9 @@ public class Transfer {
         if (!"N/A".equals(recurrence))
             validateDate(recurrenceEndDate);
         this.recurrenceEndDate = recurrenceEndDate;
+    }
+    public void setDescription(String description){
+        this.description = description;
     }
 
     //Return the values as a comma-separated string

@@ -18,11 +18,14 @@ public class Income {
     private String recurrenceStartDate = "N/A";
     private String recurrenceEndDate = "N/A";
 
-    public Income(int ID, double amount, String account, String dateAdded, String description) {
+    public Income(int ID, double amount, String account, String dateAdded, String recurrence, String recurrenceStartDate, String recurrenceEndDate, String description) {
         setID(ID);
         setAmount(amount);
         setAccount(account);
         setDateAdded(dateAdded);
+        setRecurrence(recurrence);
+        setRecurrenceStartDate(recurrenceStartDate);
+        setRecurrenceEndDate(recurrenceEndDate);
         setDescription(description);
     }
 
@@ -31,10 +34,11 @@ public class Income {
     public double getAmount()               { return amount; }
     public String getAccount()              { return account; }
     public String getDateAdded()            { return dateAdded; }
-    public String getDescription()          { return description; }
     public String getRecurrence()           { return recurrence; }
     public String getRecurrenceStartDate()  { return recurrenceStartDate; }
     public String getRecurrenceEndDate()    { return recurrenceEndDate; }
+    public String getDescription()          { return description; }
+
 
     // Setters
     public void setID(int ID) {
@@ -51,9 +55,6 @@ public class Income {
         if (!ACCOUNTS.contains(account))
             throw new IllegalArgumentException("Invalid account. Allowed accounts: " + String.join(", ", ACCOUNTS));
         this.account = account;
-    }
-    public void setDescription(String description) {
-        this.description = description != null ? description : "N/A";
     }
     public void setDateAdded(String dateAdded) {
         validateDate(dateAdded);
@@ -73,6 +74,9 @@ public class Income {
         if (!"N/A".equals(recurrence))
             validateDate(recurrenceEndDate);
         this.recurrenceEndDate = recurrenceEndDate;
+    }
+    public void setDescription(String description) {
+        this.description = description != null ? description : "N/A";
     }
 
     // Return the values as a comma-separated string

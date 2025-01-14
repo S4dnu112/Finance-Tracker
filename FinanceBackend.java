@@ -53,7 +53,7 @@ public class FinanceBackend {
     }
 
     /*
-     * Returns an array containing the balances per account index 0,1,2,3 -> bank, cash, digital wallets, credit respectively
+     * Returns a hashmap (dictionary) containing the balance per account
      */
     public HashMap<String, Double> computeAccountBalance(ArrayList<Expense> expenses, ArrayList<Income> incomes, ArrayList<Transfer> transfers) {
         HashMap<String, Double> accountBalance = new HashMap<>();

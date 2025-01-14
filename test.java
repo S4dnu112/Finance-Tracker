@@ -9,5 +9,6 @@ public class test {
         FinanceBackend backend = new FinanceBackend();
 
         backend.writeToCSV("CSV_data/expense_data.csv", expense);
+        
     }
 }

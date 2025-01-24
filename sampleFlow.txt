@@ -1,0 +1,20 @@
+SAMPLE FLOW:
+
+Launch app
+	Initialize backend, computes aggregates automatically based on previous data
+	Display Interface
+
+Adding a transaction
+	Store to the database using backend.save(transaction)
+	Update backend data using backend.updateAggregates(add, transaction)
+
+Removing a transaction
+    Remove from the database using backend.remove(transaction)
+    Update backend data using backend.updateAggregates(remove, transaction)
+
+Displaying all transactions
+	Query the database 
+	Use a third-party library to generate a table using the data from the database and embed it to the GUI.
+
+Displaying the summary
+    Use a third-party library to generate a pie chart and bar graph using the variables and embed it to the GUI.

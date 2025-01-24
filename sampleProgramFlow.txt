@@ -1,0 +1,21 @@
+SAMPLE FLOW:
+
+Launch app
+	Initialize backend, this will automatically load the data from the database
+	Display Interface, get necessary data using backend getters
+
+Adding a transaction
+	Store to the database using backend.save()
+	Update backend data using backend.updateAggregates()
+
+Removing a transaction
+    Remove from the database using backend.remove()
+
+
+
+Displaying all transactions
+	Query the database 
+	Use a third-party library to generate a table using the data from the database and embed it to the GUI.
+
+Displaying the summary
+Use a third-party library to generate a pie chart and bar graph using the variables and embed it to the GUI.

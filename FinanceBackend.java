@@ -168,13 +168,16 @@ public class FinanceBackend {
     /*
      * UPDATES AGGREGATES BASED ON NEWLY ADDED DATA
      */
-    public void updateAggregates(Income income) {
+    public void updateAggregates(String key, Income income) {
+        String[] keys = {"add", "remove"};
         // to be implemented
     }
-    public void updateAggregates(Expense expense) {
+    public void updateAggregates(String key, Expense expense) {
+        String[] keys = {"add", "remove"};
         // to be implemented
     }
-    public void updateAggregates(Transfer transfer) {
+    public void updateAggregates(String key, Transfer transfer) {
+        String[] keys = {"add", "remove"};
         // to be implemented
     }
 

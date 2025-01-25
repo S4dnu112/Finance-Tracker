@@ -18,17 +18,6 @@ public class FinanceBackend {
     private double totalIncome;
     private double totalExpense;
     private final String DB_URL = "jdbc:sqlite:transactions.db";
-    
-
-    // constructing the backend will automatically load the aggregate data from the database
-    public FinanceBackend() {
-        try(Connection db = DriverManager.getConnection(DB_URL)) {
-            getAggregates(getIncomeData(db), getExpenseData(db), getTransferData(db));
-        } catch(SQLException e) {
-            System.err.println("Database error (Transfer): " + e.getMessage());
-        }
-    }   
-
 
     // Finance-tracker attributes
     public double getTotalIncome() {
@@ -43,6 +32,15 @@ public class FinanceBackend {
     private HashMap<String, Double> getExpensePerCategory() {
         return expensePerCategory;
     }
+
+    // constructing the backend will automatically load the aggregate data from the database
+    public FinanceBackend() {
+        try(Connection db = DriverManager.getConnection(DB_URL)) {
+            getAggregates(getIncomeData(db), getExpenseData(db), getTransferData(db));
+        } catch(SQLException e) {
+            System.err.println("Database error (Transfer): " + e.getMessage());
+        }
+    }   
 
 
     

@@ -196,9 +196,8 @@ public class FinanceBackend {
             selectStmt.setInt(1, transactionID);
             ResultSet rs = selectStmt.executeQuery();
     
-            if(!rs.next()) {
+            if(!rs.next())
                 System.err.println("Transaction with ID " + transactionID + " not found in " + tableName + " table.");
-            }
 
             if (transaction.equalsIgnoreCase("income")) {
                 Income income = new Income(
@@ -440,25 +439,28 @@ public class FinanceBackend {
         }
     }
 
-
-
     // test method
     public static void main(String[] args) {
 
         // SAMPLE EXECUTION
         FinanceBackend backend = new FinanceBackend();
-        Income income = new Income(50000, "Bank", LocalDate.now().toString(), "monthly", "N/A", "N/A", "salary");
-        Expense expense = new Expense(95,  "Food & Dining","Cash", LocalDate.now().toString(), "daily", "N/A", "N/A", "Daily Food Expense");
-        Transfer transfer = new Transfer(1000, "Bank", "Cash", LocalDate.now().toString(), "daily", "N/A", "N/A", "Transfer from bank to cash");
+        Income income = new Income(100, "Bank", LocalDate.now().toString(), "daily", "2025-01-20", "N/A", "salary");
+        Expense expense = new Expense(100,  "Food & Dining","Cash", "2025-01-20", "daily", "N/A", "2025-01-21", "Daily Food Expense");
+
+        System.out.println("Total Income: " + backend.getTotalIncome());
+        System.out.println("Total Expense: " + backend.getTotalExpense());
 
 
+        backend.save(income);
+        backend.save(expense);
 
 
+        System.out.println("Total Income: " + backend.getTotalIncome());
+        System.out.println("Total Expense: " + backend.getTotalExpense());
 
-        System.out.println(backend.getTotalIncome());
-        System.out.println(backend.getTotalExpense());
-
-
+        for (String account : backend.getAccountBalances().keySet()) {
+            System.out.println(account + ": " + backend.getAccountBalances().get(account));
+        }
 
 
 

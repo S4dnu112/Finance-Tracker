@@ -1,5 +1,4 @@
 import java.util.HashMap;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,14 +11,13 @@ import java.time.LocalDate;
 import Transaction_Models.*;
 
 public class FinanceBackend {
-    // no setters for encapsulation
     private HashMap<String, Double> accountBalances = new HashMap<>();
     private HashMap<String, Double> expensePerCategory = new HashMap<>();
     private double totalIncome;
     private double totalExpense;
     private final String DB_URL = "jdbc:sqlite:transactions.db";
 
-    // Finance-tracker attributes
+    // BACKEND ATTRIBUTES (AGGREGATES)
     public double getTotalIncome() {
         return totalIncome;
     }
@@ -29,18 +27,269 @@ public class FinanceBackend {
     public HashMap<String, Double> getAccountBalances() {
         return accountBalances;
     }
-    private HashMap<String, Double> getExpensePerCategory() {
+    public HashMap<String, Double> getExpensePerCategory() {
         return expensePerCategory;
     }
 
-    // constructing the backend will automatically load the aggregate data from the database
+    /*
+    * CONSTRUCTING THE BACKEND WILL AUTOMATICALLY LOAD AGGREGATES DATA FROM PREVIOUS TRANSACTIONS
+    */
     public FinanceBackend() {
         try(Connection db = DriverManager.getConnection(DB_URL)) {
             getAggregates(getIncomeData(db), getExpenseData(db), getTransferData(db));
         } catch(SQLException e) {
-            System.err.println("Database error (Transfer): " + e.getMessage());
+            System.err.println("Database error (Constructor): " + e.getMessage());
         }
     }   
+
+    /*
+     * SAVING DATA TO THE SQLITE DATABASE AND UPDATING THE AGGREGATES
+     */
+    public void save(Income income) {
+        // Update aggregates
+        Double amount = income.getTotalAmount();
+        String account = income.getAccount();
+        accountBalances.put(account, accountBalances.getOrDefault(account, 0.0) + amount);
+        totalIncome += amount;
+    
+        // Save to database
+        String createQuery = """
+            CREATE TABLE IF NOT EXISTS incomes (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                Amount REAL NOT NULL,
+                Account TEXT NOT NULL,
+                Date_Added TEXT NOT NULL,
+                Recurrence TEXT NOT NULL,
+                Start_Date TEXT NOT NULL,
+                End_Date TEXT NOT NULL,
+                Description TEXT NOT NULL
+            );
+        """;
+        String insertQuery = """
+            INSERT INTO incomes (Amount, Account, Date_Added, Recurrence, Start_Date, End_Date, Description)
+            VALUES (?, ?, ?, ?, ?, ?, ?);
+        """;
+        try (Connection db = DriverManager.getConnection(DB_URL)) {
+            try (Statement createStmt = db.createStatement()) {
+                createStmt.execute(createQuery);
+            }
+            try (PreparedStatement insertStmt = db.prepareStatement(insertQuery)) {
+                insertStmt.setDouble(1, income.getBaseAmount());
+                insertStmt.setString(2, income.getAccount());
+                insertStmt.setString(3, income.getDateAdded());
+                insertStmt.setString(4, income.getRecurrence());
+                insertStmt.setString(5, income.getRecurrenceStartDate());
+                insertStmt.setString(6, income.getRecurrenceEndDate());
+                insertStmt.setString(7, income.getDescription());
+                insertStmt.execute();
+            }
+        } catch (SQLException e) {
+            System.err.println("Database error on save(Income): " + e.getMessage());
+        }
+    }
+    
+    public void save(Expense expense) {
+        // Update aggregates
+        Double amount = expense.getTotalAmount();
+        String category = expense.getCategory();
+        String account = expense.getAccount();
+        accountBalances.put(account, accountBalances.getOrDefault(account, 0.0) - amount);
+        expensePerCategory.put(category, expensePerCategory.getOrDefault(category, 0.0) + amount);
+        totalExpense += amount;
+    
+        // Save to database
+        String createQuery = """
+            CREATE TABLE IF NOT EXISTS expenses (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                Amount REAL NOT NULL,
+                Category TEXT NOT NULL,
+                Account TEXT NOT NULL,
+                Date_Added TEXT NOT NULL,
+                Recurrence TEXT NOT NULL,
+                Start_Date TEXT NOT NULL,
+                End_Date TEXT NOT NULL,
+                Description TEXT NOT NULL
+            );
+        """;
+        String insertQuery = """
+            INSERT INTO expenses (Amount, Category, Account, Date_Added, Recurrence, Start_Date, End_Date, Description)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+        """;
+        try (Connection db = DriverManager.getConnection(DB_URL)) {
+            try (Statement createStmt = db.createStatement()) {
+                createStmt.execute(createQuery);
+            }
+            try (PreparedStatement insertStmt = db.prepareStatement(insertQuery)) {
+                insertStmt.setDouble(1, expense.getBaseAmount());
+                insertStmt.setString(2, expense.getCategory());
+                insertStmt.setString(3, expense.getAccount());
+                insertStmt.setString(4, expense.getDateAdded());
+                insertStmt.setString(5, expense.getRecurrence());
+                insertStmt.setString(6, expense.getRecurrenceStartDate());
+                insertStmt.setString(7, expense.getRecurrenceEndDate());
+                insertStmt.setString(8, expense.getDescription());
+                insertStmt.execute();
+            }
+        } catch (SQLException e) {
+            System.err.println("Database error on save(Expense): " + e.getMessage());
+        }
+    }
+    
+    public void save(Transfer transfer) {
+        // Update aggregates
+        String fromAccount = transfer.getAccount();
+        String toAccount = transfer.getToAccount();
+        double amount = transfer.getTotalAmount();
+        accountBalances.put(fromAccount, accountBalances.getOrDefault(fromAccount, 0.0) - amount);
+        accountBalances.put(toAccount, accountBalances.getOrDefault(toAccount, 0.0) + amount);
+    
+        // Save to database
+        String createQuery = """
+            CREATE TABLE IF NOT EXISTS transfers (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                Amount REAL NOT NULL,
+                Source TEXT NOT NULL,
+                Destination TEXT NOT NULL,
+                Date_Added TEXT NOT NULL,
+                Recurrence TEXT NOT NULL,
+                Start_Date TEXT NOT NULL,
+                End_Date TEXT NOT NULL,
+                Description TEXT NOT NULL
+            );
+        """;
+        String insertQuery = """
+            INSERT INTO transfers (Amount, Source, Destination, Date_Added, Recurrence, Start_Date, End_Date, Description)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+        """;
+        try (Connection db = DriverManager.getConnection(DB_URL)) {
+            try (Statement createStmt = db.createStatement()) {
+                createStmt.execute(createQuery);
+            }
+            try (PreparedStatement insertStmt = db.prepareStatement(insertQuery)) {
+                insertStmt.setDouble(1, transfer.getBaseAmount());
+                insertStmt.setString(2, transfer.getAccount());
+                insertStmt.setString(3, transfer.getToAccount());
+                insertStmt.setString(4, transfer.getDateAdded());
+                insertStmt.setString(5, transfer.getRecurrence());
+                insertStmt.setString(6, transfer.getRecurrenceStartDate());
+                insertStmt.setString(7, transfer.getRecurrenceEndDate());
+                insertStmt.setString(8, transfer.getDescription());
+                insertStmt.execute();
+            }
+        } catch (SQLException e) {
+            System.err.println("Database error on save(Transfer): " + e.getMessage());
+        }
+    }
+    
+    /*
+     * REMOVES RECORD FROM THE DATABASE AND UPDATES THE AGGREGATES
+     */
+    public void remove(String transaction, int transactionID) {
+        String tableName = validateTransactionName(transaction);
+        String selectQuery = "SELECT * FROM " + tableName + " WHERE ID = ?";
+        String deleteQuery = "DELETE FROM " + tableName + " WHERE ID = ?";
+    
+        try (Connection db = DriverManager.getConnection(DB_URL);
+             PreparedStatement selectStmt = db.prepareStatement(selectQuery);
+             PreparedStatement deleteStmt = db.prepareStatement(deleteQuery)) {
+    
+            selectStmt.setInt(1, transactionID);
+            ResultSet rs = selectStmt.executeQuery();
+    
+            if(!rs.next()) {
+                System.err.println("Transaction with ID " + transactionID + " not found in " + tableName + " table.");
+            }
+
+            if (transaction.equalsIgnoreCase("income")) {
+                Income income = new Income(
+                    rs.getDouble("Amount"),
+                    rs.getString("Account"),
+                    rs.getString("Date_Added"),
+                    rs.getString("Recurrence"),
+                    rs.getString("Start_Date"),
+                    rs.getString("End_Date"),
+                    rs.getString("Description")
+                );
+                String account = income.getAccount();
+                double amount = income.getTotalAmount();
+                accountBalances.put(account, accountBalances.get(account) - amount);
+                totalIncome -= amount;
+            } 
+            else if (transaction.equalsIgnoreCase("expense")) {
+                Expense expense = new Expense(
+                    rs.getDouble("Amount"),
+                    rs.getString("Category"),
+                    rs.getString("Account"),
+                    rs.getString("Date_Added"),
+                    rs.getString("Recurrence"),
+                    rs.getString("Start_Date"),
+                    rs.getString("End_Date"),
+                    rs.getString("Description")
+                );
+                String account = expense.getAccount();
+                String category = expense.getCategory();
+                double amount = expense.getTotalAmount();
+                accountBalances.put(account, accountBalances.get(account) + amount);
+                expensePerCategory.put(category, expensePerCategory.get(category) - amount);
+                totalExpense -= amount;
+            } 
+            else if (transaction.equalsIgnoreCase("transfer")) {
+                Transfer transfer = new Transfer(
+                    rs.getDouble("Amount"),
+                    rs.getString("Source"),
+                    rs.getString("Destination"),
+                    rs.getString("Date_Added"),
+                    rs.getString("Recurrence"),
+                    rs.getString("Start_Date"),
+                    rs.getString("End_Date"),
+                    rs.getString("Description")
+                );
+                String fromAccount = transfer.getAccount();
+                String toAccount = transfer.getToAccount();
+                double amount = transfer.getTotalAmount();
+                accountBalances.put(fromAccount, accountBalances.get(fromAccount) + amount);
+                accountBalances.put(toAccount, accountBalances.get(toAccount) - amount);
+            }
+            // Deletes the data
+            deleteStmt.setInt(1, transactionID);
+            int rowsDeleted = deleteStmt.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                System.out.println("Transaction with ID " + transactionID + " successfully deleted from " + tableName + " table.");
+            } else {
+                System.err.println("Transaction with ID " + transactionID + " not found in " + tableName + " table.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Database error while deleting transaction: " + e.getMessage());
+        }
+    }
+
+    
+
+    /*
+     * ENDS A RECURRENCE TRANSACTION
+     */
+    public void endRecurring(String transaction, int transactionID) {
+        String tableName = validateTransactionName(transaction);
+    
+        String updateQuery = "UPDATE " + tableName + " SET End_Date = ? WHERE ID = ?";
+        
+        try (Connection db = DriverManager.getConnection(DB_URL)) {
+            try (PreparedStatement updateStmt = db.prepareStatement(updateQuery)) {
+                updateStmt.setString(1, LocalDate.now().toString());
+                updateStmt.setInt(2, transactionID);
+                int rowsUpdated = updateStmt.executeUpdate();
+    
+                if (rowsUpdated > 0) {
+                    System.out.println("Recurring transaction with ID " + transactionID + " has been successfully ended.");
+                } else {
+                    System.err.println("Transaction with ID " + transactionID + " cannot be found or has already been ended.");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Database error while ending recurrence transaction: " + e.getMessage());
+        }
+    }
 
 
     /*
@@ -67,8 +316,6 @@ public class FinanceBackend {
         } catch (SQLException e) {}
         return incomeList;
     }
-
-
     private ArrayList<Expense> getExpenseData(Connection db) {
         ArrayList<Expense> expenseList = new ArrayList<>();
         String query = "SELECT Amount, Category, Account, Date_Added, Recurrence, Start_Date, End_Date, Description FROM expenses;";
@@ -93,11 +340,9 @@ public class FinanceBackend {
         }
         return expenseList;
     }
-
-
     private ArrayList<Transfer> getTransferData(Connection db) {
         ArrayList<Transfer> transferList = new ArrayList<>();
-        String query = "SELECT Amount, From, To, Date_Added, Recurrence, Start_Date, End_Date, Description FROM transfers;";
+        String query = "SELECT Amount, Source, Destination, Date_Added, Recurrence, Start_Date, End_Date, Description FROM transfers;";
 
         if(!tableExist(db, "transfers"))
             return transferList;
@@ -105,8 +350,8 @@ public class FinanceBackend {
         try (PreparedStatement stmt = db.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 double amount = rs.getDouble("Amount");
-                String fromAccount = rs.getString("FromAccount");
-                String toAccount = rs.getString("ToAccount");
+                String fromAccount = rs.getString("Source");
+                String toAccount = rs.getString("Destination");
                 String dateAdded = rs.getString("Date_Added");
                 String recurrence = rs.getString("Recurrence");
                 String recurrenceStartDate = rs.getString("Start_Date");
@@ -119,6 +364,9 @@ public class FinanceBackend {
         }
         return transferList;
     }
+
+
+
 
     
     /*
@@ -149,7 +397,6 @@ public class FinanceBackend {
             String account = expense.getAccount();
             String category = expense.getCategory();
             double amount = expense.getTotalAmount();
-
             accountBalances.put(account, accountBalances.get(account) - amount);
             expensePerCategory.put(category, expensePerCategory.get(category) + amount);
             totalExpense += amount;
@@ -164,241 +411,26 @@ public class FinanceBackend {
     }
 
     /*
-     * UPDATES AGGREGATES BASED ON NEWLY ADDED DATA
+     * VALIDATES TRANSACTION TYPE
      */
-    public void updateAggregates(String key, Income income) {
-        String[] keys = {"add", "remove"};
-        Double amount = income.getTotalAmount();
-        String account = income.getAccount();
-
-        if(key.equals(keys[0])){
-            accountBalances.put(account, accountBalances.get(account) + amount);
-            totalIncome += amount;
-        } else if(key.equals(keys[1])){
-            accountBalances.put(account, accountBalances.get(account) - amount);
-            totalIncome -= amount;
-        }
-    }
-    public void updateAggregates(String key, Expense expense) {
-        String[] keys = {"add", "remove"};
-        Double amount = expense.getTotalAmount();
-        String category = expense.getCategory();
-        String account = expense.getAccount();
-
-        if(key.equals(keys[0])){
-            accountBalances.put(account, accountBalances.get(account) - amount);
-            expensePerCategory.put(category, expensePerCategory.get(category) + amount);
-            totalExpense += amount;
-        } else if(key.equals(keys[1])){
-            accountBalances.put(account, accountBalances.get(account) + amount);
-            expensePerCategory.put(category, expensePerCategory.get(category) - amount);
-            totalExpense -= amount;
-        }
-    }
-    public void updateAggregates(String key, Transfer transfer) {
-        String[] keys = {"add", "remove"};
-        String fromAccount = transfer.getAccount();
-        String toAccount = transfer.getToAccount();
-        double amount = transfer.getTotalAmount();
-        
-        if(key.equals(keys[0])){
-            accountBalances.put(fromAccount, accountBalances.get(fromAccount) - amount);
-            accountBalances.put(toAccount, accountBalances.get(toAccount) + amount);
-        } else if(key.equals(keys[1])){
-            accountBalances.put(fromAccount, accountBalances.get(fromAccount) + amount);
-            accountBalances.put(toAccount, accountBalances.get(toAccount) - amount);
-        }
-    }
-    public void endRecurringIncome(int transactionID){
-        String updateQuery = """
-            UPDATE incomes 
-            SET End_Date = ? 
-            WHERE ID ?
-        """;
-        try(Connection conn = DriverManager.getConnection(DB_URL)){
-            PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
-
-            updateStmt.setString(1, LocalDate.now().toString());
-            updateStmt.setInt(2, transactionID);
-            int rowsUpdated = updateStmt.executeUpdate();
-
-            if(rowsUpdated>0){
-                System.out.println("Recurring transaction with ID " + transactionID + " has been successfully ended.");
-            } else{
-                System.err.println("Transaction with ID " + transactionID + " cannot be found or has already been ended.");
+    private String validateTransactionName(String transaction) {
+        String tableName;
+        switch (transaction.toLowerCase()) {
+            case "income" -> tableName = "incomes";
+            case "expense"-> tableName = "expenses";
+            case "transfer"-> tableName = "transfers";
+            default -> {
+                throw new IllegalArgumentException("Invalid transaction type: " + transaction);
             }
-        } catch(SQLException e){
-            System.err.println("Database error while ending recurrence transaction: " + e.getMessage());
         }
+        return tableName;
     }
-
-    public void endRecurringeExpense(int transactionID){
-        String updateQuery = """
-            UPDATE expenses 
-            SET End_Date = ? 
-            WHERE ID ?
-        """;
-        try(Connection conn = DriverManager.getConnection(DB_URL)){
-            PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
-
-            updateStmt.setString(1, LocalDate.now().toString());
-            updateStmt.setInt(2, transactionID);
-            int rowsUpdated = updateStmt.executeUpdate();
-
-            if(rowsUpdated>0){
-                System.out.println("Recurring transaction with ID " + transactionID + " has been successfully ended.");
-            } else{
-                System.err.println("Transaction with ID " + transactionID + " cannot be found or has already been ended.");
-            }
-        } catch(SQLException e){
-            System.err.println("Database error while ending recurrence transaction: " + e.getMessage());
-        }
-    }
-
-    public void endRecurringTransfer(int transactionID){
-        String updateQuery = """
-            UPDATE transfers 
-            SET End_Date = ? 
-            WHERE ID ?
-        """;
-        try(Connection conn = DriverManager.getConnection(DB_URL)){
-            PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
-
-            updateStmt.setString(1, LocalDate.now().toString());
-            updateStmt.setInt(2, transactionID);
-            int rowsUpdated = updateStmt.executeUpdate();
-
-            if(rowsUpdated>0){
-                System.out.println("Recurring transaction with ID " + transactionID + " has been successfully ended.");
-            } else{
-                System.err.println("Transaction with ID " + transactionID + " cannot be found or has already been ended.");
-            }
-        } catch(SQLException e){
-            System.err.println("Database error while ending recurrence transaction: " + e.getMessage());
-        }
-    }
-
-    /*
-     * SAVING DATA TO THE SQLITE DATABASE
-     */
-    public void save(Income income) {
-        String createQuery = """
-            CREATE TABLE IF NOT EXISTS incomes (
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                Amount REAL NOT NULL,
-                Account TEXT NOT NULL,
-                Date_Added TEXT NOT NULL,
-                Recurrence TEXT NOT NULL,
-                Start_Date TEXT NOT NULL,
-                End_Date TEXT NOT NULL,
-                Description TEXT NOT NULL
-            );
-        """;
-        String insertQuery = """
-            INSERT INTO incomes (Amount, Account, Date_Added, Recurrence, Start_Date, End_Date, Description)
-            VALUES (?, ?, ?, ?, ?, ?, ?);
-        """;
-        try (Connection conn = DriverManager.getConnection(DB_URL)) {
-            try (Statement createStmt = conn.createStatement()) {
-                createStmt.execute(createQuery);
-            }
-            try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
-                insertStmt.setDouble(1, income.getBaseAmount());
-                insertStmt.setString(2, income.getAccount());
-                insertStmt.setString(3, income.getDateAdded());
-                insertStmt.setString(4, income.getRecurrence());
-                insertStmt.setString(5, income.getRecurrenceStartDate());
-                insertStmt.setString(6, income.getRecurrenceEndDate());
-                insertStmt.setString(7, income.getDescription());
-                insertStmt.execute();
-            }
-        } catch (SQLException e) {
-            System.err.println("Database error on save(Income): " + e.getMessage());
-        }
-    }
-    
-    public void save(Expense expense) {
-        String createQuery = """
-            CREATE TABLE IF NOT EXISTS expenses (
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                Amount REAL NOT NULL,
-                Category TEXT NOT NULL,
-                Account TEXT NOT NULL,
-                Date_Added TEXT NOT NULL,
-                Recurrence TEXT NOT NULL,
-                Start_Date TEXT NOT NULL,
-                End_Date TEXT NOT NULL,
-                Description TEXT NOT NULL
-            );
-        """;
-        String insertQuery = """
-            INSERT INTO expenses (Amount, Category, Account, Date_Added, Recurrence, Start_Date, End_Date, Description)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-        """;
-        try (Connection conn = DriverManager.getConnection(DB_URL)) {
-            try (Statement createStmt = conn.createStatement()) {
-                createStmt.execute(createQuery);
-            }
-            try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
-                insertStmt.setDouble(1, expense.getBaseAmount());
-                insertStmt.setString(2, expense.getCategory());
-                insertStmt.setString(3, expense.getAccount());
-                insertStmt.setString(4, expense.getDateAdded());
-                insertStmt.setString(5, expense.getRecurrence());
-                insertStmt.setString(6, expense.getRecurrenceStartDate());
-                insertStmt.setString(7, expense.getRecurrenceEndDate());
-                insertStmt.setString(8, expense.getDescription());
-                insertStmt.executeUpdate();
-            }
-        } catch (SQLException e) {
-            System.err.println("Database error on save(Expense): " + e.getMessage());
-        }
-    }
-    
-    public void save(Transfer transfer) {
-        String createQuery = """
-            CREATE TABLE IF NOT EXISTS transfers (
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                Amount REAL NOT NULL,
-                Source TEXT NOT NULL,
-                Destination TEXT NOT NULL,
-                Date_Added TEXT NOT NULL,
-                Recurrence TEXT NOT NULL,
-                Start_Date TEXT NOT NULL,
-                End_Date TEXT NOT NULL,
-                Description TEXT NOT NULL
-            );
-        """;
-        String insertQuery = """
-            INSERT INTO transfers (Amount, Source, Destination, Date_Added, Recurrence, Start_Date, End_Date, Description)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-        """;
-        try (Connection conn = DriverManager.getConnection(DB_URL)) {
-            try (Statement createStmt = conn.createStatement()) {
-                createStmt.execute(createQuery);
-            }
-            try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
-                insertStmt.setDouble(1, transfer.getBaseAmount());
-                insertStmt.setString(2, transfer.getAccount());
-                insertStmt.setString(3, transfer.getToAccount());
-                insertStmt.setString(4, transfer.getDateAdded());
-                insertStmt.setString(5, transfer.getRecurrence());
-                insertStmt.setString(6, transfer.getRecurrenceStartDate());
-                insertStmt.setString(7, transfer.getRecurrenceEndDate());
-                insertStmt.setString(8, transfer.getDescription());
-                insertStmt.execute();
-            }
-        } catch (SQLException e) {
-            System.err.println("Database error on save(Transfer): " + e.getMessage());
-        }
-    }
-    
     /*
      * CHECKS IF TABLES EXISTS
      */
-    private static boolean tableExist(Connection conn, String tableName) {
+    private static boolean tableExist(Connection db, String tableName) {
         String query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?";
-        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = db.prepareStatement(query)) {
             pstmt.setString(1, tableName);
             try (ResultSet rs = pstmt.executeQuery()) {
                 return rs.next();
@@ -419,9 +451,8 @@ public class FinanceBackend {
         Expense expense = new Expense(95,  "Food & Dining","Cash", LocalDate.now().toString(), "daily", "N/A", "N/A", "Daily Food Expense");
         Transfer transfer = new Transfer(1000, "Bank", "Cash", LocalDate.now().toString(), "daily", "N/A", "N/A", "Transfer from bank to cash");
 
-        backend.updateAggregates("add", income);
-        backend.updateAggregates("add", expense);
-        backend.updateAggregates("add", transfer);
+
+
 
 
         System.out.println(backend.getTotalIncome());

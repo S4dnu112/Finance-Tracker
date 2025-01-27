@@ -22,6 +22,7 @@ public class FinanceBackend {
     private double totalExpense;
     private final String DB_URL = "jdbc:sqlite:src\\database\\transactions.db";
 
+
     // BACKEND ATTRIBUTES (AGGREGATES)
     public double getTotalIncome() {
         return totalIncome;
@@ -443,5 +444,6 @@ public class FinanceBackend {
             return false;
         }
     }
+
 }
 

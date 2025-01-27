@@ -393,25 +393,13 @@ public class FinanceBackend {
         totalExpense = 0;
     
         for (Income income : incomes) {
-            String account = income.getAccount();
-            double amount = income.getTotalAmount();
-            accountBalances.put(account, accountBalances.get(account) + amount);
-            totalIncome += amount;
+            updateAggregates("add", income);
         }
         for (Expense expense : expenses) {
-            String account = expense.getAccount();
-            String category = expense.getCategory();
-            double amount = expense.getTotalAmount();
-            accountBalances.put(account, accountBalances.get(account) - amount);
-            expensePerCategory.put(category, expensePerCategory.get(category) + amount);
-            totalExpense += amount;
+            updateAggregates("add", expense);
         }
         for (Transfer transfer : transfers) {
-            String fromAccount = transfer.getAccount();
-            String toAccount = transfer.getToAccount();
-            double amount = transfer.getTotalAmount();
-            accountBalances.put(fromAccount, accountBalances.get(fromAccount) - amount);
-            accountBalances.put(toAccount, accountBalances.get(toAccount) + amount);
+            updateAggregates("add", transfer);
         }
     }
 
@@ -444,6 +432,5 @@ public class FinanceBackend {
             return false;
         }
     }
-
 }
 

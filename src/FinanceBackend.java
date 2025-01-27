@@ -20,7 +20,7 @@ public class FinanceBackend {
     private HashMap<String, Double> expensePerCategory = new HashMap<>();
     private double totalIncome;
     private double totalExpense;
-    private final String DB_URL = "jdbc:sqlite:transactions.db";
+    private final String DB_URL = "jdbc:sqlite:src\\database\\transactions.db";
 
     // BACKEND ATTRIBUTES (AGGREGATES)
     public double getTotalIncome() {

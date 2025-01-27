@@ -51,13 +51,8 @@ public class FinanceBackend {
      * SAVING DATA TO THE SQLITE DATABASE AND UPDATING THE AGGREGATES
      */
     public void save(Income income) {
-        // Update aggregates
-        Double amount = income.getTotalAmount();
-        String account = income.getAccount();
-        accountBalances.put(account, accountBalances.getOrDefault(account, 0.0) + amount);
-        totalIncome += amount;
+        updateAggregates("add", income);
     
-        // Save to database
         String createQuery = """
             CREATE TABLE IF NOT EXISTS incomes (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -94,15 +89,8 @@ public class FinanceBackend {
     }
     
     public void save(Expense expense) {
-        // Update aggregates
-        Double amount = expense.getTotalAmount();
-        String category = expense.getCategory();
-        String account = expense.getAccount();
-        accountBalances.put(account, accountBalances.getOrDefault(account, 0.0) - amount);
-        expensePerCategory.put(category, expensePerCategory.getOrDefault(category, 0.0) + amount);
-        totalExpense += amount;
+        updateAggregates("add", expense);
     
-        // Save to database
         String createQuery = """
             CREATE TABLE IF NOT EXISTS expenses (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -141,14 +129,8 @@ public class FinanceBackend {
     }
     
     public void save(Transfer transfer) {
-        // Update aggregates
-        String fromAccount = transfer.getAccount();
-        String toAccount = transfer.getToAccount();
-        double amount = transfer.getTotalAmount();
-        accountBalances.put(fromAccount, accountBalances.getOrDefault(fromAccount, 0.0) - amount);
-        accountBalances.put(toAccount, accountBalances.getOrDefault(toAccount, 0.0) + amount);
+        updateAggregates("add", transfer);
     
-        // Save to database
         String createQuery = """
             CREATE TABLE IF NOT EXISTS transfers (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -205,56 +187,29 @@ public class FinanceBackend {
                 System.err.println("Transaction with ID " + transactionID + " not found in " + tableName + " table.");
 
             if (transaction.equalsIgnoreCase("income")) {
-                Income income = new Income(
-                    rs.getDouble("Amount"),
-                    rs.getString("Account"),
-                    rs.getString("Date_Added"),
-                    rs.getString("Recurrence"),
-                    rs.getString("Start_Date"),
-                    rs.getString("End_Date"),
+                updateAggregates("remove", new Income(
+                    rs.getDouble("Amount"), rs.getString("Account"),
+                    rs.getString("Date_Added"), rs.getString("Recurrence"),
+                    rs.getString("Start_Date"), rs.getString("End_Date"),
                     rs.getString("Description")
-                );
-                String account = income.getAccount();
-                double amount = income.getTotalAmount();
-                accountBalances.put(account, accountBalances.get(account) - amount);
-                totalIncome -= amount;
+                ));
             } 
             else if (transaction.equalsIgnoreCase("expense")) {
-                Expense expense = new Expense(
-                    rs.getDouble("Amount"),
-                    rs.getString("Category"),
-                    rs.getString("Account"),
-                    rs.getString("Date_Added"),
-                    rs.getString("Recurrence"),
-                    rs.getString("Start_Date"),
-                    rs.getString("End_Date"),
-                    rs.getString("Description")
-                );
-                String account = expense.getAccount();
-                String category = expense.getCategory();
-                double amount = expense.getTotalAmount();
-                accountBalances.put(account, accountBalances.get(account) + amount);
-                expensePerCategory.put(category, expensePerCategory.get(category) - amount);
-                totalExpense -= amount;
+                updateAggregates("remove", new Expense(
+                    rs.getDouble("Amount"), rs.getString("Category"),
+                    rs.getString("Account"), rs.getString("Date_Added"),
+                    rs.getString("Recurrence"), rs.getString("Start_Date"),
+                    rs.getString("End_Date"), rs.getString("Description")
+                ));
             } 
             else if (transaction.equalsIgnoreCase("transfer")) {
-                Transfer transfer = new Transfer(
-                    rs.getDouble("Amount"),
-                    rs.getString("Source"),
-                    rs.getString("Destination"),
-                    rs.getString("Date_Added"),
-                    rs.getString("Recurrence"),
-                    rs.getString("Start_Date"),
-                    rs.getString("End_Date"),
-                    rs.getString("Description")
-                );
-                String fromAccount = transfer.getAccount();
-                String toAccount = transfer.getToAccount();
-                double amount = transfer.getTotalAmount();
-                accountBalances.put(fromAccount, accountBalances.get(fromAccount) + amount);
-                accountBalances.put(toAccount, accountBalances.get(toAccount) - amount);
+                updateAggregates("remove", new Transfer(
+                    rs.getDouble("Amount"), rs.getString("Source"),
+                    rs.getString("Destination"), rs.getString("Date_Added"),
+                    rs.getString("Recurrence"), rs.getString("Start_Date"),
+                    rs.getString("End_Date"), rs.getString("Description")
+                ));
             }
-            // Deletes the data
             deleteStmt.setInt(1, transactionID);
             int rowsDeleted = deleteStmt.executeUpdate();
 
@@ -295,6 +250,51 @@ public class FinanceBackend {
         }
     }
 
+
+
+    public void updateAggregates(String key, Income income) {
+        String[] keys = {"add", "remove"};
+        Double amount = income.getTotalAmount();
+        String account = income.getAccount();
+
+        if(key.equals(keys[0])){
+            accountBalances.put(account, accountBalances.get(account) + amount);
+            totalIncome += amount;
+        } else if(key.equals(keys[1])){
+            accountBalances.put(account, accountBalances.get(account) - amount);
+            totalIncome -= amount;
+        }
+    }
+    public void updateAggregates(String key, Expense expense) {
+        String[] keys = {"add", "remove"};
+        Double amount = expense.getTotalAmount();
+        String category = expense.getCategory();
+        String account = expense.getAccount();
+
+        if(key.equals(keys[0])){
+            accountBalances.put(account, accountBalances.get(account) - amount);
+            expensePerCategory.put(category, expensePerCategory.get(category) + amount);
+            totalExpense += amount;
+        } else if(key.equals(keys[1])){
+            accountBalances.put(account, accountBalances.get(account) + amount);
+            expensePerCategory.put(category, expensePerCategory.get(category) - amount);
+            totalExpense -= amount;
+        }
+    }
+    public void updateAggregates(String key, Transfer transfer) {
+        String[] keys = {"add", "remove"};
+        String fromAccount = transfer.getAccount();
+        String toAccount = transfer.getToAccount();
+        double amount = transfer.getTotalAmount();
+        
+        if(key.equals(keys[0])){
+            accountBalances.put(fromAccount, accountBalances.get(fromAccount) - amount);
+            accountBalances.put(toAccount, accountBalances.get(toAccount) + amount);
+        } else if(key.equals(keys[1])){
+            accountBalances.put(fromAccount, accountBalances.get(fromAccount) + amount);
+            accountBalances.put(toAccount, accountBalances.get(toAccount) - amount);
+        }
+    }
 
     /*
      * Loading all data from the database and storing them to arraylists
@@ -442,36 +442,6 @@ public class FinanceBackend {
         } catch (SQLException e) {
             return false;
         }
-    }
-
-    // test method
-    public static void main(String[] args) {
-
-        // SAMPLE EXECUTION
-        FinanceBackend backend = new FinanceBackend();
-        Income income = new Income(100, "Bank", LocalDate.now().toString(), "daily", "2025-01-20", "N/A", "salary");
-        Expense expense = new Expense(100,  "Food & Dining","Cash", "2025-01-20", "daily", "N/A", "2025-01-21", "Daily Food Expense");
-
-        System.out.println("Total Income: " + backend.getTotalIncome());
-        System.out.println("Total Expense: " + backend.getTotalExpense());
-
-
-        backend.save(income);
-        backend.save(expense);
-
-
-        System.out.println("Total Income: " + backend.getTotalIncome());
-        System.out.println("Total Expense: " + backend.getTotalExpense());
-
-        for (String account : backend.getAccountBalances().keySet()) {
-            System.out.println(account + ": " + backend.getAccountBalances().get(account));
-        }
-
-
-
-
-
-    
     }
 }
 

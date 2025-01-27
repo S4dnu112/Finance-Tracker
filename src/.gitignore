@@ -2,3 +2,5 @@
 *.ini
 test.java
 test.class
+.idea
+out

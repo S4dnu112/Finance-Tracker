@@ -1,4 +1,4 @@
-package Transaction_Models;
+package src.Transaction_Models;
 
 public class Transfer extends Transaction{
     private String toAccount;

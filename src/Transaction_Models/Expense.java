@@ -1,4 +1,4 @@
-package Transaction_Models;
+package src.Transaction_Models;
 import java.util.List;
 
 public class Expense extends Transaction {

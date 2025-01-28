@@ -8,8 +8,8 @@ public class AddExpenses1 {
         SwingUtilities.invokeLater(() -> {
             try {
                 // Load fonts dynamically
-                Font robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
-                Font interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("Fonts\\Inter-Regular.ttf")).deriveFont(14f);
+                Font robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("C:\\Users\\louie\\Documents\\Github\\Finance-Tracker\\src\\FrontEnd\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
+                Font interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("C:\\Users\\louie\\Documents\\Github\\Finance-Tracker\\src\\FrontEnd\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
                 Font smallerInterRegular = interRegular.deriveFont(12f);
 
                 JFrame frame = new JFrame("Add Expenses");
@@ -35,8 +35,8 @@ public class AddExpenses1 {
                 JPanel logoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
                 logoPanel.setBackground(new Color(22, 70, 65));
 
-                ImageIcon pennyIcon = new ImageIcon("penny.png");
-                Image scaledImage = pennyIcon.getImage().getScaledInstance(40, 40, Image.SCALE_REPLICATE);
+                ImageIcon pennyIcon = new ImageIcon("C:\\Users\\louie\\Documents\\Github\\Finance-Tracker\\src\\FrontEnd\\Images\\coins.png");
+                Image scaledImage = pennyIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
                 ImageIcon resizedIcon = new ImageIcon(scaledImage);
 
                 JLabel iconLabel = new JLabel(resizedIcon);
@@ -58,11 +58,11 @@ public class AddExpenses1 {
                 JButton homeButton = new JButton("HOME");
                 homeButton.setBackground(new Color(22, 70, 65));
                 homeButton.setForeground(Color.WHITE);
-                homeButton.setFont(interRegular);
+                homeButton.setFont(interRegular.deriveFont(Font.BOLD)); // Make the font bold
                 homeButton.setBorderPainted(false);
                 homeButton.setFocusable(false);
                 homeButton.addActionListener(e -> System.out.println("Home button clicked"));
-                headerRightPanel.add(homeButton);
+                headerRightPanel.add(homeButton);                
 
                 JButton settingsButton = new JButton("SETTINGS");
                 settingsButton.setBackground(new Color(22, 70, 65));

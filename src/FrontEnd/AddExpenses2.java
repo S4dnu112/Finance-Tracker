@@ -8,8 +8,8 @@ public class AddExpenses2 {
         SwingUtilities.invokeLater(() -> {
             try {
                 // Load fonts dynamically
-                Font robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("C:\\Users\\louie\\Documents\\Github\\Finance-Tracker\\src\\FrontEnd\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
-                Font interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("C:\\Users\\louie\\Documents\\Github\\Finance-Tracker\\src\\FrontEnd\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
+                Font robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
+                Font interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("Fonts\\Inter-Regular.ttf")).deriveFont(14f);
                 Font smallerInterRegular = interRegular.deriveFont(12f);
 
                 JFrame frame = new JFrame("Add Expenses");

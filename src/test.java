@@ -3,35 +3,26 @@ import backend.FinanceBackend;
 import transactionModels.Expense;
 import transactionModels.Income;
 import transactionModels.Transfer;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 public class test {
     public static void main(String[] args) {
-        long startTime = System.nanoTime();
+        FinanceBackend fb = new FinanceBackend();
+        HashMap<String, Double> accountBalances = fb.getAccountBalances();
+        
+        System.out.println(fb.getTotalIncome());
 
-        // Code to measure
-        {
-            FinanceBackend fb = new FinanceBackend();
-            System.out.println(fb.getTotalIncome());
+        Transfer transfer = new Transfer(1000, "Bank", "Cash", LocalDate.now().toString(), "N/A", "N/A", "N/A", 50, "N/A");
+        fb.save(transfer);
 
-            Income income = new Income(10, "Bank", "2021-01-01", "daily", "N/A", "N/A", "test");
-            fb.save(income);
+        
 
-            System.out.println(fb.getTotalIncome());
+        for (Map.Entry<String, Double> entry : accountBalances.entrySet()) {
+            System.out.println("Account: " + entry.getKey() + ", Balance: " + entry.getValue());
         }
 
-
-        // Record the end time
-        long endTime = System.nanoTime();
-
-        // Calculate the time difference in nanoseconds, milliseconds, or seconds
-        long durationInNano = endTime - startTime;
-        double durationInMillis = durationInNano / 1_000_000.0;
-        double durationInSeconds = durationInNano / 1_000_000_000.0;
-
-        // Print the result
-        System.out.println("Execution time in nanoseconds: " + durationInNano);
-        System.out.println("Execution time in milliseconds: " + durationInMillis);
-        System.out.println("Execution time in seconds: " + durationInSeconds);
     }
     
 }

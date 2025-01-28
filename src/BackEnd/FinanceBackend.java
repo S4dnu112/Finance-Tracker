@@ -290,7 +290,7 @@ public class FinanceBackend {
         Double transactionFee = transfer.getTransactionFee();
         
         if(key.equals(keys[0])){
-            accountBalances.put(fromAccount, accountBalances.get(fromAccount) - amount + transactionFee);
+            accountBalances.put(fromAccount, accountBalances.get(fromAccount) - amount - transactionFee);
             accountBalances.put(toAccount, accountBalances.get(toAccount) + amount);
         } else if(key.equals(keys[1])){
             accountBalances.put(fromAccount, accountBalances.get(fromAccount) + amount + transactionFee);

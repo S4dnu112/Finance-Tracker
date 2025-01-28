@@ -2,15 +2,11 @@
 
 To run the program, make sure you have sqlite installed
 
-
-### Compiling everything
+### Compiling everything altogether
 javac -sourcepath src src/test.java src/backend/FinanceBackend.java src/transactionModels/*.java 
 
 ### Running finance backend test file:
 java -cp "src;lib/*" test
-
-### Together
-javac -sourcepath src src/test.java src/backend/FinanceBackend.java src/transactionModels/*.java; java -cp "src;lib/*" test
 
 
 

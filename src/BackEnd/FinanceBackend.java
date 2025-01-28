@@ -18,16 +18,16 @@ import java.time.LocalDate;
 public class FinanceBackend {
     private HashMap<String, Double> accountBalances = new HashMap<>();
     private HashMap<String, Double> expensePerCategory = new HashMap<>();
-    private double totalIncome;
-    private double totalExpense;
+    private Double totalIncome;
+    private Double totalExpense;
     private final String DB_URL = "jdbc:sqlite:src\\database\\transactions.db";
 
 
     // BACKEND ATTRIBUTES (AGGREGATES)
-    public double getTotalIncome() {
+    public Double getTotalIncome() {
         return totalIncome;
     }
-    public double getTotalExpense() {
+    public Double getTotalExpense() {
         return totalExpense;
     }
     public HashMap<String, Double> getAccountBalances() {
@@ -142,12 +142,13 @@ public class FinanceBackend {
                 Recurrence TEXT NOT NULL,
                 Start_Date TEXT NOT NULL,
                 End_Date TEXT NOT NULL,
+                Transaction_Fee REAL NOT NULL,
                 Description TEXT NOT NULL
             );
         """;
         String insertQuery = """
-            INSERT INTO transfers (Amount, Source, Destination, Date_Added, Recurrence, Start_Date, End_Date, Description)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+            INSERT INTO transfers (Amount, Source, Destination, Date_Added, Recurrence, Start_Date, End_Date, Transaction_Fee, Description)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
         """;
         try (Connection db = DriverManager.getConnection(DB_URL)) {
             try (Statement createStmt = db.createStatement()) {
@@ -161,7 +162,8 @@ public class FinanceBackend {
                 insertStmt.setString(5, transfer.getRecurrence());
                 insertStmt.setString(6, transfer.getRecurrenceStartDate());
                 insertStmt.setString(7, transfer.getRecurrenceEndDate());
-                insertStmt.setString(8, transfer.getDescription());
+                insertStmt.setDouble(8, transfer.getTransactionFee());
+                insertStmt.setString(9, transfer.getDescription());
                 insertStmt.execute();
             }
         } catch (SQLException e) {
@@ -208,7 +210,8 @@ public class FinanceBackend {
                     rs.getDouble("Amount"), rs.getString("Source"),
                     rs.getString("Destination"), rs.getString("Date_Added"),
                     rs.getString("Recurrence"), rs.getString("Start_Date"),
-                    rs.getString("End_Date"), rs.getString("Description")
+                    rs.getString("End_Date"), rs.getDouble("Transaction_Fee"), 
+                    rs.getString("Description")
                 ));
             }
             deleteStmt.setInt(1, transactionID);
@@ -251,9 +254,7 @@ public class FinanceBackend {
         }
     }
 
-
-
-    public void updateAggregates(String key, Income income) {
+    private void updateAggregates(String key, Income income) {
         String[] keys = {"add", "remove"};
         Double amount = income.getTotalAmount();
         String account = income.getAccount();
@@ -266,7 +267,7 @@ public class FinanceBackend {
             totalIncome -= amount;
         }
     }
-    public void updateAggregates(String key, Expense expense) {
+    private void updateAggregates(String key, Expense expense) {
         String[] keys = {"add", "remove"};
         Double amount = expense.getTotalAmount();
         String category = expense.getCategory();
@@ -282,17 +283,18 @@ public class FinanceBackend {
             totalExpense -= amount;
         }
     }
-    public void updateAggregates(String key, Transfer transfer) {
+    private void updateAggregates(String key, Transfer transfer) {
         String[] keys = {"add", "remove"};
         String fromAccount = transfer.getAccount();
         String toAccount = transfer.getToAccount();
-        double amount = transfer.getTotalAmount();
+        Double amount = transfer.getTotalAmount();
+        Double transactionFee = transfer.getTransactionFee();
         
         if(key.equals(keys[0])){
-            accountBalances.put(fromAccount, accountBalances.get(fromAccount) - amount);
+            accountBalances.put(fromAccount, accountBalances.get(fromAccount) - amount + transactionFee);
             accountBalances.put(toAccount, accountBalances.get(toAccount) + amount);
         } else if(key.equals(keys[1])){
-            accountBalances.put(fromAccount, accountBalances.get(fromAccount) + amount);
+            accountBalances.put(fromAccount, accountBalances.get(fromAccount) + amount + transactionFee);
             accountBalances.put(toAccount, accountBalances.get(toAccount) - amount);
         }
     }
@@ -309,7 +311,7 @@ public class FinanceBackend {
         
         try (PreparedStatement stmt = db.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                double amount = rs.getDouble("Amount");
+                Double amount = rs.getDouble("Amount");
                 String account = rs.getString("Account");
                 String dateAdded = rs.getString("Date_Added");
                 String recurrence = rs.getString("Recurrence");
@@ -330,7 +332,7 @@ public class FinanceBackend {
 
         try (PreparedStatement stmt = db.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                double amount = rs.getDouble("Amount");
+                Double amount = rs.getDouble("Amount");
                 String category = rs.getString("Category");
                 String account = rs.getString("Account");
                 String dateAdded = rs.getString("Date_Added");
@@ -354,15 +356,16 @@ public class FinanceBackend {
 
         try (PreparedStatement stmt = db.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                double amount = rs.getDouble("Amount");
+                Double amount = rs.getDouble("Amount");
                 String fromAccount = rs.getString("Source");
                 String toAccount = rs.getString("Destination");
                 String dateAdded = rs.getString("Date_Added");
                 String recurrence = rs.getString("Recurrence");
                 String recurrenceStartDate = rs.getString("Start_Date");
                 String recurrenceEndDate = rs.getString("End_Date");
+                Double transactionFee = rs.getDouble("Transaction_Fee");
                 String description = rs.getString("Description");
-                transferList.add(new Transfer(amount, fromAccount, toAccount, dateAdded, recurrence, recurrenceStartDate, recurrenceEndDate, description));
+                transferList.add(new Transfer(amount, fromAccount, toAccount, dateAdded, recurrence, recurrenceStartDate, recurrenceEndDate, transactionFee, description));
             }
         } catch (SQLException e) {
             System.err.println("Database error (Transfer data): " + e.getMessage());
@@ -389,8 +392,8 @@ public class FinanceBackend {
         expensePerCategory.put("Family & Education", 0.0);
         expensePerCategory.put("Health & Wellness", 0.0);
         expensePerCategory.put("Other", 0.0);
-        totalIncome = 0;
-        totalExpense = 0;
+        totalIncome = 0.0;
+        totalExpense = 0.0;
     
         for (Income income : incomes) {
             updateAggregates("add", income);

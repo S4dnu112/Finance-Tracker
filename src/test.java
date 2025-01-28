@@ -1,9 +1,8 @@
-package src;
 
-import src.Transaction_Models.Income;
-import src.Transaction_Models.Expense;
-import src.Transaction_Models.Transfer;
-import src.BackEnd.FinanceBackend;
+import backend.FinanceBackend;
+import transactionModels.Expense;
+import transactionModels.Income;
+import transactionModels.Transfer;
 
 public class test {
     public static void main(String[] args) {

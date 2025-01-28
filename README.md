@@ -4,13 +4,13 @@ To run the program, make sure you have sqlite installed
 
 
 ### Compiling everything
-javac src/**/*.java
+javac -sourcepath src src/test.java src/backend/FinanceBackend.java src/transactionModels/*.java 
 
 ### Running finance backend test file:
+java -cp "src;lib/*" test
+
+### Together
+javac -sourcepath src src/test.java src/backend/FinanceBackend.java src/transactionModels/*.java; java -cp "src;lib/*" test
 
 
-
-Make sure you are in the root folder while running this
-javac src\test.java; java -cp ".;lib/sqlite-jdbc-3.48.0.0.jar" src.test
-javac src\test.java; java -cp "lib/*" src.test
 

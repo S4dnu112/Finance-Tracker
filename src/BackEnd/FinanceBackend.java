@@ -1,10 +1,9 @@
-package src.BackEnd;
+package backend;
 import java.util.HashMap;
 
-import src.Transaction_Models.Income;
-import src.Transaction_Models.Expense;
-import src.Transaction_Models.Transfer;
-
+import transactionModels.Expense;
+import transactionModels.Income;
+import transactionModels.Transfer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

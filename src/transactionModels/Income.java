@@ -1,4 +1,4 @@
-package src.Transaction_Models;
+package transactionModels;
 
 public class Income extends Transaction {
     public Income(double baseAmount, String account, String dateAdded, String recurrence, String recurrenceStartDate, String recurrenceEndDate, String description) {

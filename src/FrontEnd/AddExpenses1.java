@@ -126,14 +126,18 @@ public class AddExpenses1 {
 
                 JPanel categoriesPanel = new JPanel(new GridLayout(3, 2));
                 categoriesPanel.setBackground(Color.WHITE);
+                ButtonGroup categoryGroup = new ButtonGroup();
+
                 String[] categories = {"Food & Dining", "Leisure & Shopping", "Transportation", "Household", "Family & Education", "Health & Wellness"};
                 for (String category : categories) {
-                    JCheckBox checkBox = new JCheckBox(category);
-                    checkBox.setFont(interRegular);
-                    checkBox.setBackground(Color.WHITE); // Set the background color
-                    checkBox.setOpaque(false); // Ensure transparency (removes grey background)
-                    checkBox.setIcon(new CustomCheckBoxIcon(new Color(196, 218, 210), new Color(22, 70, 65))); 
-                    categoriesPanel.add(checkBox);
+                    JRadioButton radioButton = new JRadioButton(category);
+                    radioButton.setFont(interRegular);
+                    radioButton.setBackground(Color.WHITE); // Set background to white
+                    radioButton.setOpaque(false); // Ensure transparency
+                    radioButton.setIcon(new CustomRadioButtonIcon(new Color(196, 218, 210), new Color(22, 70, 65))); // Custom styled icon
+                    radioButton.setFocusPainted(false); // Remove focus border
+                    categoryGroup.add(radioButton); // Add to button group
+                    categoriesPanel.add(radioButton);
                 }
                 gbc.gridx = 1;
                 formPanel.add(categoriesPanel, gbc);
@@ -300,33 +304,31 @@ public class AddExpenses1 {
     }
 }
 
-class CustomCheckBoxIcon implements Icon {
-    private final int size = 16; // Size of the checkbox
+class CustomRadioButtonIcon implements Icon {
+    private final int size = 16; // Size of the radio button
     private final Color backgroundColor;
-    private final Color checkColor;
+    private final Color dotColor;
 
-    public CustomCheckBoxIcon(Color backgroundColor, Color checkColor) {
+    public CustomRadioButtonIcon(Color backgroundColor, Color dotColor) {
         this.backgroundColor = backgroundColor;
-        this.checkColor = checkColor;
+        this.dotColor = dotColor;
     }
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
         Graphics2D g2 = (Graphics2D) g.create();
-        JCheckBox cb = (JCheckBox) c;
+        JRadioButton rb = (JRadioButton) c;
 
-        // Draw the checkbox square
+        // Draw the outer circle
         g2.setColor(backgroundColor);
-        g2.fillRect(x, y, size, size);
+        g2.fillOval(x, y, size, size);
         g2.setColor(Color.DARK_GRAY);
-        g2.drawRect(x, y, size - 1, size - 1);
+        g2.drawOval(x, y, size - 1, size - 1);
 
-        // Draw the checkmark if selected
-        if (cb.isSelected()) {
-            g2.setColor(checkColor);
-            g2.setStroke(new BasicStroke(2));
-            g2.drawLine(x + 3, y + size / 2, x + size / 3, y + size - 4);
-            g2.drawLine(x + size / 3, y + size - 4, x + size - 4, y + 3);
+        // Draw the inner dot if selected
+        if (rb.isSelected()) {
+            g2.setColor(dotColor);
+            g2.fillOval(x + 4, y + 4, size - 8, size - 8);
         }
 
         g2.dispose();

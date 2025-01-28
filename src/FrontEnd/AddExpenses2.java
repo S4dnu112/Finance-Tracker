@@ -3,7 +3,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public class AddExpenses1 {
+public class AddExpenses2 {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
@@ -83,6 +83,35 @@ public class AddExpenses1 {
                 wrapperPanel.setBorder(BorderFactory.createEmptyBorder(-10, -20, 30, -50));
                 wrapperPanel.setBackground(Color.WHITE);
                 wrapperPanel.setPreferredSize(new Dimension(600, 500));
+
+                // Pie Chart Placeholder Wrapper Panel
+                JPanel pieChartWrapperPanel = new JPanel(new BorderLayout());
+                pieChartWrapperPanel.setBackground(Color.WHITE);
+                pieChartWrapperPanel.setBorder(BorderFactory.createEmptyBorder(80, 00, 80, 100)); // Increased padding: top, left, bottom, right
+                pieChartWrapperPanel.setPreferredSize(new Dimension(900, 600)); // Increased width for closer alignment to 'Add Expenses' panel
+
+                // Pie Chart Placeholder Panel
+                JPanel pieChartPanel = new JPanel(new BorderLayout());
+                pieChartPanel.setBackground(new Color(196, 218, 210)); // Background for the pie chart panel
+                pieChartPanel.setPreferredSize(new Dimension(500, 500)); // Actual placeholder size
+                pieChartPanel.setBorder(BorderFactory.createLineBorder(new Color(22, 70, 65), 2)); // Optional border
+
+                // Pie Chart Label
+                JLabel pieChartLabel = new JLabel("Summary of Expenses", SwingConstants.CENTER);
+                pieChartLabel.setFont(interRegular.deriveFont(Font.BOLD, 20f));
+                pieChartLabel.setForeground(new Color(22, 70, 65));
+                // Add padding to the label to create space between the panel and the label
+                pieChartLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0)); // Top, Left, Bottom, Right padding
+                pieChartPanel.add(pieChartLabel, BorderLayout.SOUTH); // Add label at the bottom of the placeholder
+
+                // Add the pieChartPanel to the wrapper
+                pieChartWrapperPanel.add(pieChartPanel, BorderLayout.CENTER);
+
+                // Add to mainPanel (middle-right positioning)
+                mainPanel.add(pieChartWrapperPanel, BorderLayout.EAST);
+
+                // Add to mainPanel (middle-right positioning)
+                mainPanel.add(pieChartWrapperPanel, BorderLayout.EAST);
 
                 // Form Panel
                 JPanel formPanel = new JPanel();
@@ -338,6 +367,7 @@ class CustomRadioButtonIcon implements Icon {
     public int getIconWidth() {
         return size;
     }
+
 
     @Override
     public int getIconHeight() {

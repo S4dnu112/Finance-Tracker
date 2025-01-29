@@ -348,11 +348,10 @@ public class FinanceBackend {
     }
     private ArrayList<Transfer> getTransferData(Connection db) {
         ArrayList<Transfer> transferList = new ArrayList<>();
-        String query = "SELECT Amount, Source, Destination, Date_Added, Recurrence, Start_Date, End_Date, Description FROM transfers;";
+        String query = "SELECT Amount, Source, Destination, Date_Added, Recurrence, Start_Date, End_Date, Transaction_Fee, Description FROM transfers;";
 
         if(!tableExist(db, "transfers"))
             return transferList;
-
         try (PreparedStatement stmt = db.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Double amount = rs.getDouble("Amount");

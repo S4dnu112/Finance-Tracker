@@ -28,8 +28,8 @@ public class IncomeFormPanel extends JPanel {
     FinanceBackend fb = new FinanceBackend();
     public IncomeFormPanel() {
         try {
-            interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("frontend\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
-            robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("frontend\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
+            interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
+            robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
             smallerInterRegular = interRegular.deriveFont(12f);
         } catch (FontFormatException | IOException e) {
             interRegular = new Font("Arial", Font.PLAIN, 14); // Fallback font

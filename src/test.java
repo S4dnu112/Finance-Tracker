@@ -13,14 +13,8 @@ public class test extends JFrame{
     FinanceBackend fb = new FinanceBackend();
 
     public test() {
-        super("Finance Tracker");
-
-
-        add(fb.createPieChart());
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
-        pack();
+        super("test");
+        //tests here
     }
     public static void main(String[] args) {
         new test();

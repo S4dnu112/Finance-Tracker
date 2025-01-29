@@ -105,11 +105,11 @@ public class HomePanel extends JPanel {
         // Create individual panels for each view button with dark green background
         JPanel summaryPanel = new JPanel(new GridBagLayout());
         summaryPanel.setBackground(new Color(22, 66, 60));
-        summaryPanel.add(createViewButton("VIEW SUMMARY", "src\\resources\\Images\\summary1.png"));
+        summaryPanel.add(createViewButton("VIEW SUMMARY", "src\\resources\\Images\\summary.png"));
 
         JPanel transactionsPanel = new JPanel(new GridBagLayout());
         transactionsPanel.setBackground(new Color(22, 66, 60));
-        transactionsPanel.add(createViewButton("VIEW TRANSACTIONS", "src\\resources\\Images\\transac1.png"));
+        transactionsPanel.add(createViewButton("VIEW ALL TRANSACTIONS", "src\\resources\\Images\\transac.png"));
 
         viewButtonsPanel.add(summaryPanel);
         viewButtonsPanel.add(transactionsPanel);
@@ -186,7 +186,7 @@ public class HomePanel extends JPanel {
 
         try {
             ImageIcon icon = new ImageIcon(iconPath);
-            Image image = icon.getImage().getScaledInstance(350, 180, Image.SCALE_SMOOTH);
+            Image image = icon.getImage().getScaledInstance(530, 270, Image.SCALE_SMOOTH);
             button.setIcon(new ImageIcon(image));
         } catch (Exception e) {
             System.err.println("Failed to load icon: " + iconPath);

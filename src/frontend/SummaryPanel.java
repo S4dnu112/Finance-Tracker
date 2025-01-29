@@ -78,7 +78,7 @@ public class SummaryPanel extends JPanel {
         statsPanel.setBackground(Color.WHITE);
         Color panelColor = new Color(196, 218, 210);
 
-        Double remaining = fb.getAccountBalances().get("Cash") + fb.getAccountBalances().get("Bank") + fb.getAccountBalances().get("Digital Wallets");
+        Double remaining = fb.getAccountBalances().get("Cash") + fb.getAccountBalances().get("Bank") + fb.getAccountBalances().get("Digital Wallets") + fb.getAccountBalances().get("Credit Card");
         
         statsPanel.add(createStatsPanel("Total Income", fb.getTotalIncome(), panelColor, "src\\resources\\Images\\income.png"));
         statsPanel.add(createStatsPanel("Total Expenses", fb.getTotalExpense(), panelColor,"src\\resources\\Images\\expense.png"));

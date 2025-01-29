@@ -3,11 +3,9 @@
 To run the program, make sure you have sqlite installed
 
 ## Compiling everything altogether
-#### Before compiling make sure you are on the root folder (above src)
+```javac -cp "lib/*" -sourcepath src src/backend/FinanceBackend.java src/transactionModels/*.java src/frontend/*.java; java -cp "src;lib/*" ```
 
-```javac -sourcepath src src/test.java src/backend/FinanceBackend.java src/frontend/*.java src/transactionModels/*.java ```
-
-## Running finance backend test file:
-```java -cp "src;lib/*" test```
+## Running a specific file:
+```java -cp "src;lib/*" package.filename```
 
 

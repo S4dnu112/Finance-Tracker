@@ -1,4 +1,4 @@
-package FrontEnd;
+package frontend;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,8 +19,8 @@ public class TransferMoney extends JPanel {
 
     private void loadFonts() {
         try {
-            interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("frontend\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
-            robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("frontend\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
+            interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
+            robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
         } catch (FontFormatException | IOException e) {
             interRegular = new Font("Arial", Font.PLAIN, 14);
             robotoExtraBold = new Font("Arial", Font.BOLD, 40);
@@ -55,7 +55,7 @@ public class TransferMoney extends JPanel {
         navBar.setLayout(null);
 
         // PENNYWISE Label
-        ImageIcon icon = new ImageIcon("frontend\\Images\\Logo App final.png");
+        ImageIcon icon = new ImageIcon("src\\resources\\Images\\Logo.png");
         Image scaledIcon = icon.getImage().getScaledInstance(40, 30, Image.SCALE_SMOOTH);
         JLabel pennywiseLabel = new JLabel("PENNYWISE", new ImageIcon(scaledIcon), JLabel.LEFT);
         pennywiseLabel.setFont(interRegular);
@@ -209,7 +209,7 @@ public class TransferMoney extends JPanel {
         }
 
         private JButton createNextButton() {
-            JButton nextButton = new JButton("NEXT ▶");
+            JButton nextButton = new JButton("NEXT \u25B6");
             nextButton.setFont(new Font("Inter", Font.BOLD, 16));
             nextButton.setBackground(null);
             nextButton.setForeground(Color.BLACK);
@@ -333,7 +333,7 @@ public class TransferMoney extends JPanel {
         }
 
         private JButton createBackButton() {
-            JButton backButton = new JButton("◀ BACK");
+            JButton backButton = new JButton("\u25C0 BACK");
             backButton.setFont(new Font("Inter", Font.BOLD, 16));
             backButton.setBackground(Color.WHITE);
             backButton.setForeground(Color.BLACK);

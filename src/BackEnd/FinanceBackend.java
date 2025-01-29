@@ -299,7 +299,7 @@ public class FinanceBackend {
              ResultSet rs = stmt.executeQuery(checkTableQuery)) {
     
             if (!rs.next() || rs.getInt(1) == 0) {
-                return createNoDataPanel("The 'incomes' table does not exist.");
+                return createNoDataPanel("No income recorded.");
             }
     
             // Query to check if there are any rows in the incomes table
@@ -426,7 +426,7 @@ public class FinanceBackend {
              ResultSet rs = stmt.executeQuery(checkTableQuery)) {
     
             if (!rs.next() || rs.getInt(1) == 0) {
-                return createNoDataPanel("The 'transfers' table does not exist.");
+                return createNoDataPanel("No transfers recorded.");
             }
     
             // Query to check if there are any rows in the transfers table

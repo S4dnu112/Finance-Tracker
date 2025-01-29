@@ -1,45 +1,37 @@
 package frontend;
 
 import javax.swing.*;
-import transactionModels.Expense;
+import backend.FinanceBackend;
+import transactionModels.Income;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import backend.FinanceBackend;
 
-
-public class ExpensesFormPanel extends JPanel {
+public class IncomeFormPanel extends JPanel {
     private Font interRegular;
     private Font robotoExtraBold;
     private Font smallerInterRegular;
-    private FinanceBackend fb = new FinanceBackend();
 
     // Global Fields for Form Elements
     private JTextField amountField;
-    private JComboBox<String> categoryField;
     private JComboBox<String> accountField;
     private JComboBox<String> recurrenceField;
     private JTextField startDateField;
     private JTextField endDateField;
     private JTextArea descriptionField;
 
-    private String[] categories = {"Select Category", "Food & Dining", "Leisure & Shopping", "Transportation", "Household",
-        "Family & Education", "Health & Wellness", "Other"};
-
     private String[] accounts = {"Select Account", "Bank", "Cash", "Digital Wallets", "Credit Card"};
-
     private String[] recurrences = {"Select Recurrence", "daily", "weekly", "monthly", "yearly"};
 
-
-    // there's error here it can't read all the fonts, kaya pala
-    public ExpensesFormPanel() {
+    FinanceBackend fb = new FinanceBackend();
+    public IncomeFormPanel() {
         try {
-            interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
-            robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
+            interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("frontend\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
+            robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("frontend\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
             smallerInterRegular = interRegular.deriveFont(12f);
         } catch (FontFormatException | IOException e) {
-            System.out.println("Error loading fonts: " + e.getMessage());
             interRegular = new Font("Arial", Font.PLAIN, 14); // Fallback font
             smallerInterRegular = interRegular.deriveFont(12f);
         }
@@ -52,7 +44,7 @@ public class ExpensesFormPanel extends JPanel {
         setBackground(Color.WHITE);
         setPreferredSize(new Dimension(600, 500));
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createFormPanel(), createPieChartPanel());
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createFormPanel(), createSummaryPanel());
         splitPane.setDividerSize(0);
         splitPane.setResizeWeight(0.5);
         splitPane.setOneTouchExpandable(true);
@@ -68,7 +60,7 @@ public class ExpensesFormPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Title
-        JLabel title = new JLabel("Add Expenses", SwingConstants.CENTER);
+        JLabel title = new JLabel("Add Income", SwingConstants.CENTER);
         title.setFont(robotoExtraBold);
         title.setForeground(new Color(22, 70, 65));
         gbc.gridwidth = 2;
@@ -82,26 +74,22 @@ public class ExpensesFormPanel extends JPanel {
         amountField = createStyledTextField();
         addFormField(formPanel, "Amount: ", amountField, gbc, 1);
 
-        // Categories
-        categoryField = createStyledComboBox(categories);
-        addFormField(formPanel, "Categories:", categoryField, gbc, 2);
-
         // Account Dropdown
         accountField = createStyledComboBox(accounts);
-        addFormField(formPanel, "Account:", accountField, gbc, 3);
+        addFormField(formPanel, "Account:", accountField, gbc, 2);
 
         // Recurrence Dropdown
         recurrenceField = createStyledComboBox(recurrences);
-        addFormField(formPanel, "Recurrence:", recurrenceField, gbc, 4);
+        addFormField(formPanel, "Recurrence:", recurrenceField, gbc, 3);
 
         // Date Fields
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 4;
         gbc.gridwidth = 2;
         formPanel.add(createDatePanel(), gbc);
 
         // Description
-        gbc.gridy = 6;
+        gbc.gridy = 5;
         gbc.gridwidth = 1;
         JLabel descriptionLabel = new JLabel("Description:");
         descriptionLabel.setFont(interRegular);
@@ -113,22 +101,22 @@ public class ExpensesFormPanel extends JPanel {
 
         // Save Button
         JButton saveButton = createSaveButton();
-        gbc.gridy = 8;
+        gbc.gridy = 6;
         formPanel.add(saveButton, gbc);
 
         return formPanel;
     }
 
-    private JPanel createPieChartPanel() {
-        JPanel pieChartWrapperPanel = new JPanel(new BorderLayout());
-        pieChartWrapperPanel.setBackground(Color.WHITE);
-        pieChartWrapperPanel.setBorder(BorderFactory.createEmptyBorder(80, 0, 80, 100));
-        pieChartWrapperPanel.setPreferredSize(new Dimension(900, 600));
+    private JPanel createSummaryPanel() {
+        JPanel summaryWrapperPanel = new JPanel(new BorderLayout());
+        summaryWrapperPanel.setBackground(Color.WHITE);
+        summaryWrapperPanel.setBorder(BorderFactory.createEmptyBorder(80, 0, 80, 100));
+        summaryWrapperPanel.setPreferredSize(new Dimension(900, 600));
 
-        JPanel pieChartPanel = fb.createPieChartPanel();
+        JPanel summaryPanel = fb.createBarGraphPanel();
 
-        pieChartWrapperPanel.add(pieChartPanel, BorderLayout.CENTER);
-        return pieChartWrapperPanel;
+        summaryWrapperPanel.add(summaryPanel, BorderLayout.CENTER);
+        return summaryWrapperPanel;
     }
 
     private JTextField createStyledTextField() {
@@ -157,12 +145,10 @@ public class ExpensesFormPanel extends JPanel {
         GridBagConstraints dateGbc = new GridBagConstraints();
         dateGbc.insets = new Insets(10, 10, 10, 10);
         dateGbc.fill = GridBagConstraints.HORIZONTAL;
-    
-        // Start Date
+
         addDateField(datePanel, "Start-date:", dateGbc, 0, true);
-        // End Date
         addDateField(datePanel, "End-date:", dateGbc, 2, false);
-    
+
         return datePanel;
     }
 
@@ -170,16 +156,16 @@ public class ExpensesFormPanel extends JPanel {
         JLabel dateLabel = new JLabel(label);
         dateLabel.setFont(interRegular);
         gbc.gridx = x;
-        gbc.gridy = 5;
+        gbc.gridy = 0;
         panel.add(dateLabel, gbc);
-    
+
         JTextField dateField = new JTextField("yyyy-mm-dd");
         dateField.setFont(smallerInterRegular);
         dateField.setPreferredSize(new Dimension(100, 35));
         dateField.setBackground(new Color(196, 218, 210));
         dateField.setForeground(new Color(150, 150, 150));
         dateField.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-    
+
         dateField.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -188,7 +174,7 @@ public class ExpensesFormPanel extends JPanel {
                     dateField.setForeground(new Color(22, 70, 65));
                 }
             }
-    
+
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
                 if (dateField.getText().isEmpty()) {
@@ -197,18 +183,16 @@ public class ExpensesFormPanel extends JPanel {
                 }
             }
         });
-    
-        // Assign the text field to the correct instance variable
+
         if (isStartDate) {
             startDateField = dateField;
         } else {
             endDateField = dateField;
         }
-    
+
         gbc.gridx = x + 1;
         panel.add(dateField, gbc);
     }
-    
 
     private JTextArea createDescriptionArea() {
         JTextArea descriptionArea = new JTextArea(3, 20);
@@ -228,7 +212,7 @@ public class ExpensesFormPanel extends JPanel {
         saveButton.setForeground(Color.WHITE);
         saveButton.setFocusable(false);
         saveButton.setPreferredSize(new Dimension(saveButton.getPreferredSize().width + 20, 50));
-        saveButton.addActionListener(e -> saveExpense());
+        saveButton.addActionListener(e -> saveIncome());
         return saveButton;
     }
 
@@ -243,14 +227,13 @@ public class ExpensesFormPanel extends JPanel {
         panel.add(field, gbc);
     }
 
-    private void saveExpense() {
+    private void saveIncome() {
         try {
             double amount = Double.parseDouble(amountField.getText());
-            String category = categoryField.getSelectedItem().toString();
             String account = accountField.getSelectedItem().toString();
             String recurrence = recurrenceField.getSelectedItem().toString();
             String startDate = startDateField.getText().trim().isEmpty() || startDateField.getText().equals("yyyy-mm-dd") ? "N/A" : startDateField.getText();
-            String endDate = endDateField.getText().trim().isEmpty()  || endDateField.getText().equals("yyyy-mm-dd") ? "N/A" : endDateField.getText();
+            String endDate = endDateField.getText().trim().isEmpty() || endDateField.getText().equals("yyyy-mm-dd") ? "N/A" : endDateField.getText();
             String description = descriptionField.getText().trim().isEmpty() ? "N/A" : descriptionField.getText();
 
             if (recurrence.equals("Select Recurrence")) {
@@ -258,23 +241,21 @@ public class ExpensesFormPanel extends JPanel {
                 startDate = "N/A";
                 endDate = "N/A";
             }
+            
+            fb.save(new Income(amount, account, LocalDate.now().toString(), recurrence, startDate, endDate, description));
 
-            fb.save(new Expense(amount, category, account, LocalDate.now().toString(), recurrence, startDate, endDate, description));
-
-            JOptionPane.showMessageDialog(this, "Expense saved successfully!");
+            JOptionPane.showMessageDialog(this, "Income saved successfully!");
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid input for amount. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error saving expense: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error saving income: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Expenses Form Panel");
+        JFrame frame = new JFrame("Add Income Panel");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new ExpensesFormPanel());
+        frame.add(new IncomeFormPanel());
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);

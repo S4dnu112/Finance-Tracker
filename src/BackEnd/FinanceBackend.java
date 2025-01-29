@@ -1,9 +1,29 @@
 package backend;
 import java.util.HashMap;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.*;
+import java.awt.*;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PiePlot;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
+
+import java.awt.*;
+
+
 import transactionModels.Expense;
 import transactionModels.Income;
 import transactionModels.Transfer;
+
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -252,6 +272,299 @@ public class FinanceBackend {
             System.err.println("Database error while ending recurrence transaction: " + e.getMessage());
         }
     }
+
+    public JPanel getIncomesTable() {
+        JPanel panel = new JPanel(new BorderLayout());
+    
+        String[] columnNames = {"ID", "Amount", "Account", "Date Added", "Recurrence", "Start Date", "End Date", "Description"};
+    
+        // Make table non-editable by overriding isCellEditable
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // All cells are non-editable
+            }
+        };
+    
+        JTable table = new JTable(tableModel);
+        table.setFillsViewportHeight(true);
+    
+        JScrollPane scrollPane = new JScrollPane(table);
+        panel.add(scrollPane, BorderLayout.CENTER);
+    
+        // SQL query to check if the incomes table exists
+        String checkTableQuery = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='incomes'";
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(checkTableQuery)) {
+    
+            if (!rs.next() || rs.getInt(1) == 0) {
+                return createNoDataPanel("The 'incomes' table does not exist.");
+            }
+    
+            // Query to check if there are any rows in the incomes table
+            String countQuery = "SELECT COUNT(*) FROM incomes";
+            try (ResultSet rsCount = stmt.executeQuery(countQuery)) {
+                if (rsCount.next() && rsCount.getInt(1) == 0) {
+                    return createNoDataPanel("No income recorded.");
+                }
+            }
+    
+            // Query to load data from incomes table
+            String query = "SELECT * FROM incomes";
+            try (ResultSet rsIncomes = stmt.executeQuery(query)) {
+                while (rsIncomes.next()) {
+                    Object[] row = {
+                        rsIncomes.getInt("ID"),
+                        rsIncomes.getDouble("Amount"),
+                        rsIncomes.getString("Account"),
+                        rsIncomes.getString("Date_Added"),
+                        rsIncomes.getString("Recurrence"),
+                        rsIncomes.getString("Start_Date"),
+                        rsIncomes.getString("End_Date"),
+                        rsIncomes.getString("Description")
+                    };
+                    tableModel.addRow(row);
+                }
+            }
+        } catch (SQLException e) {
+            panel.add(new JLabel("Error loading income data: " + e.getMessage()));
+        }
+    
+        return panel;
+    }
+    
+
+    public JPanel getExpensesTable() {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        // Database query to check if the table exists and contains data
+        String checkTableQuery = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='expenses'";
+        String fetchDataQuery = "SELECT * FROM expenses";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+            Statement stmt = conn.createStatement()) {
+
+            // Check if the table exists
+            ResultSet rs = stmt.executeQuery(checkTableQuery);
+            if (!rs.next() || rs.getInt(1) == 0) {
+                return createNoDataPanel("No expenses recorded.");
+            }
+
+            // Check if there are any expenses
+            rs = stmt.executeQuery("SELECT COUNT(*) FROM expenses");
+            if (rs.next() && rs.getInt(1) == 0) {
+                return createNoDataPanel("No expenses recorded.");
+            }
+
+            // Table exists and has data, so display it
+            String[] columnNames = {"ID", "Amount", "Category", "Account", "Date Added", "Recurrence", "Start Date", "End Date", "Description"};
+
+            // Non-editable table model
+            DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+
+            JTable table = new JTable(tableModel);
+            table.setFillsViewportHeight(true);
+            table.getTableHeader().setReorderingAllowed(false);
+
+            // Populate table with data
+            rs = stmt.executeQuery(fetchDataQuery);
+            while (rs.next()) {
+                Object[] row = {
+                    rs.getInt("ID"),
+                    rs.getDouble("Amount"),
+                    rs.getString("Category"),
+                    rs.getString("Account"),
+                    rs.getString("Date_Added"),
+                    rs.getString("Recurrence"),
+                    rs.getString("Start_Date"),
+                    rs.getString("End_Date"),
+                    rs.getString("Description")
+                };
+                tableModel.addRow(row);
+            }
+
+            JScrollPane scrollPane = new JScrollPane(table);
+            panel.add(scrollPane, BorderLayout.CENTER);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return createNoDataPanel("Error loading data: " + e.getMessage());
+        }
+
+        return panel;
+    }
+
+    public JPanel getTransfersTable() {
+        JPanel panel = new JPanel(new BorderLayout());
+    
+        String[] columnNames = {"ID", "Amount", "Source", "Destination", "Date Added", "Recurrence", "Start Date", "End Date", "Transaction Fee", "Description"};
+    
+        // Make table non-editable by overriding isCellEditable
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // All cells are non-editable
+            }
+        };
+    
+        JTable table = new JTable(tableModel);
+        table.setFillsViewportHeight(true);
+    
+        JScrollPane scrollPane = new JScrollPane(table);
+        panel.add(scrollPane, BorderLayout.CENTER);
+    
+        // SQL query to check if the transfers table exists
+        String checkTableQuery = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='transfers'";
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(checkTableQuery)) {
+    
+            if (!rs.next() || rs.getInt(1) == 0) {
+                return createNoDataPanel("The 'transfers' table does not exist.");
+            }
+    
+            // Query to check if there are any rows in the transfers table
+            String countQuery = "SELECT COUNT(*) FROM transfers";
+            try (ResultSet rsCount = stmt.executeQuery(countQuery)) {
+                if (rsCount.next() && rsCount.getInt(1) == 0) {
+                    return createNoDataPanel("No transfers recorded.");
+                }
+            }
+    
+            // Query to load data from transfers table
+            String query = "SELECT * FROM transfers";
+            try (ResultSet rsTransfers = stmt.executeQuery(query)) {
+                while (rsTransfers.next()) {
+                    Object[] row = {
+                        rsTransfers.getInt("ID"),
+                        rsTransfers.getDouble("Amount"),
+                        rsTransfers.getString("Source"),
+                        rsTransfers.getString("Destination"),
+                        rsTransfers.getString("Date_Added"),
+                        rsTransfers.getString("Recurrence"),
+                        rsTransfers.getString("Start_Date"),
+                        rsTransfers.getString("End_Date"),
+                        rsTransfers.getDouble("Transaction_Fee"),
+                        rsTransfers.getString("Description")
+                    };
+                    tableModel.addRow(row);
+                }
+            }
+        } catch (SQLException e) {
+            panel.add(new JLabel("Error loading transfer data: " + e.getMessage()));
+        }
+    
+        return panel;
+    }
+
+
+    public JPanel createPieChartPanel() {
+
+        final Color[] PALETTE = {
+            new Color(0x0F5D4E), // Dark Green (Food & Dining)
+            new Color(0xEAF2D7), // Light Green (Leisure & Shopping)
+            new Color(0x688F76), // Muted Green (Transportation)
+            new Color(0x36544F), // Dark Teal (Household)
+            new Color(0x8AA282), // Medium Green (Family & Education)
+            new Color(0x6B8F71), // Soft Green (Health & Wellness)
+            new Color(0x587569)  // Earthy Green (Other)
+        };
+        
+        // Creating dataset for the pie chart
+        DefaultPieDataset pieChartDataset = new DefaultPieDataset();
+        for (Map.Entry<String, Double> entry : expensePerCategory.entrySet()) {
+            pieChartDataset.setValue(entry.getKey(), entry.getValue());
+        }
+
+        // Creating the pie chart
+        JFreeChart pieChart = ChartFactory.createPieChart(
+            "Summary of Expenses", 
+            pieChartDataset, 
+            true, 
+            true, 
+            false
+        );
+
+        PiePlot plot = (PiePlot) pieChart.getPlot();
+        int intIndex = 0;
+        for (String category : expensePerCategory.keySet()) {
+            plot.setSectionPaint(category, PALETTE[intIndex++]);
+        }
+
+        plot.setLabelGenerator(null);
+
+        // Creating the panel for the chart
+        ChartPanel chartPanel = new ChartPanel(pieChart);
+        chartPanel.setPreferredSize(new Dimension(500, 500));
+        chartPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        chartPanel.setBackground(new Color(196, 218, 210));
+
+        // Returning the panel
+        JPanel panel = new JPanel();
+        panel.setSize(500, 500);
+        panel.setLayout(new BorderLayout());
+        panel.add(chartPanel);
+        return panel;
+    }
+
+    public JPanel createBarGraphPanel() {
+        // Creating dataset for the bar chart
+        DefaultCategoryDataset barGraphDataset = new DefaultCategoryDataset();
+
+        // Loop through the HashMap and add data to the dataset
+        for (Map.Entry<String, Double> entry : accountBalances.entrySet()) {
+            barGraphDataset.addValue(entry.getValue(), "Balance", entry.getKey());
+        }
+
+        // Creating the bar chart
+        JFreeChart barChart = ChartFactory.createBarChart(
+            "Summary of Income",
+            "Account",
+            "Amount",
+            barGraphDataset,
+            org.jfree.chart.plot.PlotOrientation.VERTICAL,
+            true,
+            true,
+            false
+        );
+
+        // Customizing the chart appearance
+        CategoryPlot plot = (CategoryPlot) barChart.getPlot();
+        BarRenderer renderer = (BarRenderer) plot.getRenderer();
+        renderer.setSeriesPaint(0, new Color(0x0F5D4E));
+
+        // Creating the chart panel
+        ChartPanel chartPanel = new ChartPanel(barChart);
+        chartPanel.setPreferredSize(new Dimension(500, 500));
+        chartPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        chartPanel.setBackground(new Color(196, 218, 210));
+
+        // Creating the JPanel to hold the chart
+        JPanel panel = new JPanel();
+        panel.setSize(500, 500);
+        panel.setLayout(new BorderLayout());
+        panel.add(chartPanel);
+
+        return panel;
+    }
+
+    
+    private JPanel createNoDataPanel(String message) {
+        JPanel panel = new JPanel(new BorderLayout());
+        JLabel messageLabel = new JLabel(message, SwingConstants.CENTER);
+        messageLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        panel.add(messageLabel, BorderLayout.CENTER);
+        return panel;
+    }
+    
+    
+
 
     private void updateAggregates(String key, Income income) {
         String[] keys = {"add", "remove"};

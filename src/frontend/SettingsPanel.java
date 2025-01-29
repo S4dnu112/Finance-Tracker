@@ -3,6 +3,9 @@ package frontend;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
 import backend.FinanceBackend;
@@ -22,6 +25,7 @@ public class SettingsPanel extends JPanel {
     private boolean isChanged = false;
 
     public SettingsPanel(FinanceBackend Fb, Font robotoExtraBold, Font interRegular, Font interExtraBold) {
+
         this.robotoExtraBold = robotoExtraBold;
         this.interRegular = interRegular;
         this.interExtraBold = interExtraBold;

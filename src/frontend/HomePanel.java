@@ -1,5 +1,6 @@
 package frontend;
 
+import backend.FinanceBackend;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -9,8 +10,12 @@ public class HomePanel extends JPanel {
     private JTextField cashTextField;
     private JTextField digitalWalletTextField;
     private JTextField creditCardTextField;
+    FinanceBackend fb;
 
-    public HomePanel() {
+    public HomePanel(FinanceBackend fb) {
+        this.fb = fb;
+
+        // ito na mismo ung maginteract
         setLayout(new BorderLayout(20, 20));
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -66,16 +71,16 @@ public class HomePanel extends JPanel {
         panel.add(headerLabel);
 
         // Balance Fields
-        bankTextField = new JTextField("₱0.00");
+        bankTextField = new JTextField("\u20B1 " + fb.getAccountBalances().get("Bank"));
         panel.add(createBalancePanel("BANK", bankTextField));
 
-        cashTextField = new JTextField("₱0.00");
+        cashTextField = new JTextField("\u20B1 " + fb.getAccountBalances().get("Cash"));
         panel.add(createBalancePanel("CASH", cashTextField));
 
-        digitalWalletTextField = new JTextField("₱0.00");
+        digitalWalletTextField = new JTextField("\u20B1 " + fb.getAccountBalances().get("Digital Wallets"));
         panel.add(createBalancePanel("DIGITAL WALLET", digitalWalletTextField));
 
-        creditCardTextField = new JTextField("₱0.00");
+        creditCardTextField = new JTextField("\u20B1 " + + fb.getAccountBalances().get("Credit Card"));
         panel.add(createBalancePanel("CREDIT CARD", creditCardTextField));
 
         return panel;
@@ -89,9 +94,9 @@ public class HomePanel extends JPanel {
         // Action Buttons Panel
         JPanel actionButtonsPanel = new JPanel(new GridLayout(1, 3, 20, 0));
         actionButtonsPanel.setOpaque(false);
-        actionButtonsPanel.add(createActionButton("ADD INCOME", "Images\\add_income-removebg-preview.png"));
-        actionButtonsPanel.add(createActionButton("ADD EXPENSE", "Images\\add_expense-removebg-preview.png"));
-        actionButtonsPanel.add(createActionButton("TRANSFER MONEY", "Images\\transfer.png"));
+        actionButtonsPanel.add(createActionButton("ADD INCOME", "src\\resources\\Images\\income.png"));
+        actionButtonsPanel.add(createActionButton("ADD EXPENSE", "src\\resources\\Images\\expense.png"));
+        actionButtonsPanel.add(createActionButton("TRANSFER MONEY", "src\\resources\\Images\\transfer.png"));
 
         // View Buttons Panel
         JPanel viewButtonsPanel = new JPanel(new GridLayout(1, 2, 20, 0));
@@ -100,11 +105,11 @@ public class HomePanel extends JPanel {
         // Create individual panels for each view button with dark green background
         JPanel summaryPanel = new JPanel(new GridBagLayout());
         summaryPanel.setBackground(new Color(22, 66, 60));
-        summaryPanel.add(createViewButton("VIEW SUMMARY", "Images\\summary1.png"));
+        summaryPanel.add(createViewButton("VIEW SUMMARY", "src\\resources\\Images\\summary1.png"));
 
         JPanel transactionsPanel = new JPanel(new GridBagLayout());
         transactionsPanel.setBackground(new Color(22, 66, 60));
-        transactionsPanel.add(createViewButton("VIEW TRANSACTIONS", "Images\\transac1.png"));
+        transactionsPanel.add(createViewButton("VIEW TRANSACTIONS", "src\\resources\\Images\\transac1.png"));
 
         viewButtonsPanel.add(summaryPanel);
         viewButtonsPanel.add(transactionsPanel);

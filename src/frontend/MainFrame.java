@@ -34,9 +34,9 @@ public class MainFrame extends JFrame {
 
     private void loadFonts() {
         try {
-            interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("frontend\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
-            robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("frontend\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
-            interExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("frontend\\Fonts\\Inter-ExtraBold.ttf")).deriveFont(14f);
+            interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
+            robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
+            interExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Inter-ExtraBold.ttf")).deriveFont(14f);
             smallerInterRegular = interRegular.deriveFont(12f);
         } catch (FontFormatException | IOException e) {
             // System.out.println("Error loading fonts: " + e.getMessage());
@@ -51,7 +51,7 @@ public class MainFrame extends JFrame {
         contentPanel = new JPanel(new CardLayout());
         
         // Add content panels
-        contentPanel.add(new HomePanel(), "Home");
+        contentPanel.add(new HomePanel(fb), "Home");
         contentPanel.add(new SettingsPanel(fb, robotoExtraBold, interRegular, interExtraBold), "Settings");
         // contentPanel.add(new BodyPanel(), "Body");
 
@@ -92,7 +92,7 @@ public class MainFrame extends JFrame {
         JPanel logoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         logoPanel.setBackground(new Color(22, 70, 65));
 
-        ImageIcon pennyIcon = new ImageIcon("Images\\logo.png");
+        ImageIcon pennyIcon = new ImageIcon("src\\resources\\Images\\logo.png");
         Image scaledImage = pennyIcon.getImage().getScaledInstance(42, 35, Image.SCALE_REPLICATE);
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
 

@@ -36,9 +36,9 @@ public class TransactionPanel extends JPanel {
         menuPanel.setPreferredSize(new Dimension(200, -1));
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
         
-        JButton incomeButton = new JButton("Income");
-        JButton expenseButton = new JButton("Expense");
-        JButton transferButton = new JButton("Transfer");
+        JButton incomeButton = new JButton("Income", resizeIcon("src/resources/Images/income.png", 40, 40));
+        JButton expenseButton = new JButton("Expense", resizeIcon("src/resources/Images/expense.png", 40, 40));
+        JButton transferButton = new JButton("Transfer", resizeIcon("src/resources/Images/transfer.png", 40, 40));
         
         styleMenuButton(incomeButton);
         styleMenuButton(expenseButton);
@@ -61,12 +61,10 @@ public class TransactionPanel extends JPanel {
         
         // Delete button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton deleteButton = new JButton("Delete");
-        deleteButton.setFont(new Font("Arial", Font.PLAIN, 10));
-        deleteButton.setForeground(Color.WHITE);
-        deleteButton.setBackground(Color.RED);
-        deleteButton.setFocusPainted(false);
+        JButton deleteButton = new JButton(resizeIcon("src/resources/Images/delete.png", 25, 25));
+        deleteButton.setBackground(new Color(238, 238, 238));
         deleteButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 15));
+        deleteButton.setPreferredSize(new Dimension(25, 25));
         deleteButton.addActionListener(e -> deleteSelectedRow());
         buttonPanel.add(deleteButton);
         
@@ -120,15 +118,9 @@ public class TransactionPanel extends JPanel {
         
         // Get and add the new table
         switch (type) {
-            case "Income":
-                mainTable = fb.getIncomesTable();
-                break;
-            case "Expense":
-                mainTable = fb.getExpensesTable();
-                break;
-            case "Transfer":
-                mainTable = fb.getTransfersTable();
-                break;
+            case "Income" -> mainTable = fb.getIncomesTable();
+            case "Expense" -> mainTable = fb.getExpensesTable();
+            case "Transfer" -> mainTable = fb.getTransfersTable();
         }
         
         // Add the new table
@@ -161,17 +153,12 @@ public class TransactionPanel extends JPanel {
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
             
-            if (confirm == JOptionPane.YES_OPTION) {
-                boolean success = false;
-                
+            if (confirm == JOptionPane.YES_OPTION) {                
                 try {
                     switch (currentTableType) {
-                        case "Income": fb.remove("Income", id);
-                            break;
-                        case "Expense": fb.remove("Expense", id);
-                            break;
-                        case "Transfer": fb.remove("Transfer", id);
-                            break;
+                        case "Income" -> fb.remove("Income", id);
+                        case "Expense" -> fb.remove("Expense", id);
+                        case "Transfer" -> fb.remove("Transfer", id);
                     }
 
                     loadTransactionData(currentTableType);
@@ -192,6 +179,12 @@ public class TransactionPanel extends JPanel {
                 "Invalid Input",
                 JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private ImageIcon resizeIcon(String path, int width, int height) {
+        ImageIcon originalIcon = new ImageIcon(path);
+        Image scaledImage = originalIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaledImage);
     }
     
     public static void main(String[] args) {

@@ -23,13 +23,14 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+        setIconImage(new ImageIcon("src/resources/Images/logo.png").getImage());
 
         initializePanels();
 
         add(headerPanel, BorderLayout.NORTH);
         add(contentPanel, BorderLayout.CENTER);
 
-        showPanel("Home"); // Show this panel by default
+        PanelManager.getInstance().showPanel("Home"); // Show this panel by default
     }
 
     private void loadFonts() {
@@ -48,17 +49,17 @@ public class MainFrame extends JFrame {
     // okay
     private void initializePanels() {
         headerPanel = createHeaderPanel();
-        contentPanel = new JPanel(new CardLayout());
+        PanelManager manager = PanelManager.getInstance();
+        contentPanel = manager.getContentPanel();
         
-        // Add content panels
-        contentPanel.add(new HomePanel(fb), "Home");
-        contentPanel.add(new SettingsPanel(fb, robotoExtraBold, interRegular, interExtraBold), "Settings");
-        // contentPanel.add(new BodyPanel(), "Body");
-
-        // sa body panel i2
-        // contentPanel.add(new ExpensesFormPanel(fb, interRegular, robotoExtraBold), "ExpensePanel");
-
-    }
+        //Adding Panels
+        manager.registerPanel("Home", () -> new HomePanel(fb));
+        manager.registerPanel("Settings", () -> new SettingsPanel(fb, robotoExtraBold, interRegular, interExtraBold));
+        manager.registerPanel("Income", IncomePanel::new);
+        manager.registerPanel("Expense", ExpensePanel::new);
+        manager.registerPanel("Transfer", TransferPanel::new);
+        manager.registerPanel("Summary", SummaryPanel::new);
+        manager.registerPanel("Transaction", TransactionsPanel::new);    }
 
 
     private JPanel createHeaderPanel() {
@@ -114,8 +115,8 @@ public class MainFrame extends JFrame {
         JButton homeButton = createHeaderButton("HOME", true);
         JButton settingsButton = createHeaderButton("SETTINGS", false);
 
-        homeButton.addActionListener(e -> showPanel("Home"));
-        settingsButton.addActionListener(e -> showPanel("Settings"));
+        homeButton.addActionListener(e -> PanelManager.getInstance().showPanel("Home"));
+        settingsButton.addActionListener(e -> PanelManager.getInstance().showPanel("Settings"));
 
         buttonPanel.add(homeButton);
         buttonPanel.add(settingsButton);
@@ -132,21 +133,6 @@ public class MainFrame extends JFrame {
         button.setFocusable(false);
         return button;
     }
-
-    // kaya may name eh kasi dahil dito: contentPanel.add(createHomePanel(), "Home");
-    private void showPanel(String panelName) {
-        contentPanel.removeAll();
-        switch (panelName) {
-            case "Home" -> contentPanel.add(new HomePanel(fb), "Home");
-            case "Settings" -> contentPanel.add(new SettingsPanel(fb, robotoExtraBold, interRegular, interExtraBold), "Settings");
-        }
-        contentPanel.revalidate();
-        contentPanel.repaint();
-        CardLayout layout = (CardLayout) contentPanel.getLayout();
-        layout.show(contentPanel, panelName);
-    }
-    
-
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

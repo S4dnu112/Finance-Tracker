@@ -19,7 +19,7 @@ public class HomePanel extends JPanel {
         try {
             userName = fb.readUserData().get("name");
         } catch (Exception e) {
-            userName = "User";
+            userName = "PennyWise";
         }
 
         // ito na mismo ung maginteract
@@ -77,7 +77,7 @@ public class HomePanel extends JPanel {
         panel.add(createBalancePanel("CASH", cashTextField));
 
         digitalWalletTextField = new JTextField("\u20B1 " + fb.getAccountBalances().get("Digital Wallets"));
-        panel.add(createBalancePanel("DIGITAL WALLET", digitalWalletTextField));
+        panel.add(createBalancePanel("DIGITAL WALLETS", digitalWalletTextField));
 
         creditCardTextField = new JTextField("\u20B1 " + + fb.getAccountBalances().get("Credit Card"));
         panel.add(createBalancePanel("CREDIT CARD", creditCardTextField));
@@ -93,10 +93,25 @@ public class HomePanel extends JPanel {
         // Action Buttons Panel
         JPanel actionButtonsPanel = new JPanel(new GridLayout(1, 3, 20, 0));
         actionButtonsPanel.setOpaque(false);
-        actionButtonsPanel.add(createActionButton("ADD INCOME", "src\\resources\\Images\\income.png"));
-        actionButtonsPanel.add(createActionButton("ADD EXPENSE", "src\\resources\\Images\\expense.png"));
-        actionButtonsPanel.add(createActionButton("TRANSFER MONEY", "src\\resources\\Images\\transfer.png"));
+        JButton btnIncome = createActionButton("ADD INCOME", "src\\resources\\Images\\income.png");
+        JButton btnExpense = createActionButton("ADD EXPENSE", "src\\resources\\Images\\expense.png");
+        JButton btnTransfer = createActionButton("TRANSFER MONEY", "src\\resources\\Images\\transfer.png");
+        actionButtonsPanel.add(btnIncome);
+        actionButtonsPanel.add(btnExpense);
+        actionButtonsPanel.add(btnTransfer);
 
+        // Button Functionality
+        btnIncome.addActionListener(e -> {
+            PanelManager.getInstance().showPanel("Income");
+        });
+
+        btnExpense.addActionListener(e -> {
+        PanelManager.getInstance().showPanel("Expense");
+        });
+
+        btnTransfer.addActionListener(e -> {
+            PanelManager.getInstance().showPanel("Transfer");
+        });
         // View Buttons Panel
         JPanel viewButtonsPanel = new JPanel(new GridLayout(1, 2, 20, 0));
         viewButtonsPanel.setOpaque(false);
@@ -104,11 +119,14 @@ public class HomePanel extends JPanel {
         // Create individual panels for each view button with dark green background
         JPanel summaryPanel = new JPanel(new GridBagLayout());
         summaryPanel.setBackground(new Color(22, 66, 60));
-        summaryPanel.add(createViewButton("VIEW SUMMARY", "src\\resources\\Images\\summary.png"));
+        JButton btnSummary = createViewButton("VIEW SUMMARY", "src\\resources\\Images\\summary.png");
 
         JPanel transactionsPanel = new JPanel(new GridBagLayout());
         transactionsPanel.setBackground(new Color(22, 66, 60));
-        transactionsPanel.add(createViewButton("VIEW ALL TRANSACTIONS", "src\\resources\\Images\\transac.png"));
+        JButton btnTransaction = createViewButton("VIEW ALL TRANSACTIONS", "src\\resources\\Images\\transac.png");
+
+        summaryPanel.add(btnSummary);
+        transactionsPanel.add(btnTransaction);
 
         viewButtonsPanel.add(summaryPanel);
         viewButtonsPanel.add(transactionsPanel);
@@ -124,6 +142,15 @@ public class HomePanel extends JPanel {
         gbc.gridy = 1;
         gbc.weighty = 0.6;
         mainPanel.add(viewButtonsPanel, gbc);
+
+                // Button Functionality
+        btnSummary.addActionListener(e -> {
+            PanelManager.getInstance().showPanel("Summary");
+        });
+
+        btnTransaction.addActionListener(e -> {
+            PanelManager.getInstance().showPanel("Transaction");
+        });
 
         return mainPanel;
     }

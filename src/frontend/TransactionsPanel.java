@@ -7,13 +7,13 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 
-public class TransactionPanel extends JPanel {
+public class TransactionsPanel extends JPanel {
     private FinanceBackend fb = new FinanceBackend();
     private JPanel mainTable;
     private JPanel tablePanel;
     private String currentTableType = "Income"; // Track current table type
     
-    public TransactionPanel() {
+    public TransactionsPanel() {
         setLayout(new BorderLayout());
         createMainContent();
     }
@@ -191,7 +191,7 @@ public class TransactionPanel extends JPanel {
         JFrame frame = new JFrame("Transaction Panel");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
-        frame.add(new TransactionPanel());
+        frame.add(new TransactionsPanel());
         frame.setVisible(true);
     }
 }

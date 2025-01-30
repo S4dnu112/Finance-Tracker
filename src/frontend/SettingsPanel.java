@@ -14,30 +14,38 @@ import backend.FinanceBackend;
 
 
 public class SettingsPanel extends JPanel {
-    private final Font robotoExtraBold;
-    private final Font interRegular;
-    private final Font interExtraBold;
-    private final Font smallerInterRegular;
-    private final JTextField nameField;
-    private final JButton updateButton;
-    private final Color editableColor = new Color(196, 218, 210);
-    private final Color uneditableColor = new Color(175, 200, 190);
-    private final Color updateDefaultColor = new Color(150, 200, 180);
-    private final Color updateActiveColor = new Color(22, 70, 65);
+    private Font robotoExtraBold;
+    private Font interRegular;
+    private Font interExtraBold;
+    private Font smallerInterRegular;
+    private JTextField nameField;
+    private JButton updateButton;
+    private Color editableColor = new Color(196, 218, 210);
+    private Color uneditableColor = new Color(175, 200, 190);
+    private Color updateDefaultColor = new Color(150, 200, 180);
+    private Color updateActiveColor = new Color(22, 70, 65);
     private boolean isChanged = false;
     private FinanceBackend Fb;
 
-    public SettingsPanel(FinanceBackend Fb, Font robotoExtraBold, Font interRegular, Font interExtraBold) {
+    public SettingsPanel(FinanceBackend Fb) {
 
         this.Fb = Fb;
-        this.robotoExtraBold = robotoExtraBold;
-        this.interRegular = interRegular;
-        this.interExtraBold = interExtraBold;
-        this.smallerInterRegular = interRegular.deriveFont(12f);
+        loadFonts();
         this.nameField = new JTextField();
         this.updateButton = new JButton("UPDATE");
         
         setupPanel();
+    }
+    private void loadFonts() {
+        try {
+            interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
+            robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
+            smallerInterRegular = interRegular.deriveFont(12f);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+            interRegular = new Font("Arial", Font.PLAIN, 14);
+            robotoExtraBold = new Font("Arial", Font.BOLD, 40);
+        }
     }
 
     private void setupPanel() {

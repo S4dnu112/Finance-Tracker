@@ -22,13 +22,14 @@ public class TransferPanel extends JPanel {
 
     private Transfer transferData;
 
-    FinanceBackend fb = new FinanceBackend();
+    private FinanceBackend fb;
 
-    String[] accountsCombo = {"Select Account", "Bank", "Cash", "Digital Wallets", "Credit Card"};
-    String[] recurrenceCombo = {"Select Recurrence", "Daily", "Weekly", "Monthly"};
+    private String[] accountsCombo = {"Select Account", "Bank", "Cash", "Digital Wallets", "Credit Card"};
+    private String[] recurrenceCombo = {"Select Recurrence", "Daily", "Weekly", "Monthly"};
     private boolean isVerified = false;
 
-    public TransferPanel() {
+    public TransferPanel(FinanceBackend fb) {
+        this.fb = fb;
         loadFonts();
         setupUI();
     }
@@ -39,6 +40,7 @@ public class TransferPanel extends JPanel {
             robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
             smallerInterRegular = interRegular.deriveFont(12f);
         } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
             interRegular = new Font("Arial", Font.PLAIN, 14);
             robotoExtraBold = new Font("Arial", Font.BOLD, 40);
         }

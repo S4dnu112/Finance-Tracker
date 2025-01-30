@@ -10,12 +10,10 @@ import backend.FinanceBackend;
 public class MainFrame extends JFrame {
     private JPanel headerPanel;
     private JPanel contentPanel;
-    private Font interRegular, robotoExtraBold, interExtraBold, smallerInterRegular;
-    FinanceBackend fb; 
+    private Font interRegular;
+    private FinanceBackend fb = new FinanceBackend();
 
     public MainFrame() {
-        fb = new FinanceBackend();
-
         loadFonts();
 
         setTitle("PennyWise");
@@ -36,13 +34,9 @@ public class MainFrame extends JFrame {
     private void loadFonts() {
         try {
             interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
-            robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
-            interExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Inter-ExtraBold.ttf")).deriveFont(14f);
-            smallerInterRegular = interRegular.deriveFont(12f);
         } catch (FontFormatException | IOException e) {
-            // System.out.println("Error loading fonts: " + e.getMessage());
-            interRegular = new Font("Arial", Font.PLAIN, 14); // Fallback font
-            smallerInterRegular = interRegular.deriveFont(12f);
+            e.printStackTrace();
+            interRegular = new Font("Arial", Font.PLAIN, 14);
         }
     }
 
@@ -54,12 +48,12 @@ public class MainFrame extends JFrame {
         
         //Adding Panels
         manager.registerPanel("Home", () -> new HomePanel(fb));
-        manager.registerPanel("Settings", () -> new SettingsPanel(fb, robotoExtraBold, interRegular, interExtraBold));
-        manager.registerPanel("Income", IncomePanel::new);
-        manager.registerPanel("Expense", ExpensePanel::new);
-        manager.registerPanel("Transfer", TransferPanel::new);
-        manager.registerPanel("Summary", SummaryPanel::new);
-        manager.registerPanel("Transaction", TransactionsPanel::new);    }
+        manager.registerPanel("Settings", () -> new SettingsPanel(fb));
+        manager.registerPanel("Income", () -> new IncomePanel(fb));
+        manager.registerPanel("Expense", () -> new ExpensePanel(fb));
+        manager.registerPanel("Transfer", () -> new TransferPanel(fb));
+        manager.registerPanel("Summary", () -> new SummaryPanel(fb));
+        manager.registerPanel("Transaction", () -> new TransactionsPanel(fb));    }
 
 
     private JPanel createHeaderPanel() {

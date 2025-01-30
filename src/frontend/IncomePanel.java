@@ -26,18 +26,25 @@ public class IncomePanel extends JPanel {
     private String[] recurrences = {"Select Recurrence", "daily", "weekly", "monthly", "yearly"};
     private boolean successfulSave = false;
 
-    FinanceBackend fb = new FinanceBackend();
-    public IncomePanel() {
+    private FinanceBackend fb;
+
+    public IncomePanel(FinanceBackend fb) {
+        System.out.println(fb.getAccountBalances().get("Bank"));
+        this.fb = fb;
+        loadFonts();
+        setupPanel();
+    }
+
+    private void loadFonts() {
         try {
             interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
             robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
             smallerInterRegular = interRegular.deriveFont(12f);
         } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
             interRegular = new Font("Arial", Font.PLAIN, 14); // Fallback font
             smallerInterRegular = interRegular.deriveFont(12f);
         }
-
-        setupPanel();
     }
 
     private void setupPanel() {
@@ -269,14 +276,5 @@ public class IncomePanel extends JPanel {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error saving income: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Add Income Panel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new IncomePanel());
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
     }
 }

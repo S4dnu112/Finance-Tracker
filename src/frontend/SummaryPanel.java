@@ -8,23 +8,24 @@ import java.io.IOException;
 
 public class SummaryPanel extends JPanel {
     private Font robotoExtraBold;
-    private Font interRegular;
     private Font interExtraBold;
-    private FinanceBackend fb = new FinanceBackend();
+    private FinanceBackend fb;
     
-    public SummaryPanel() {
-        try {
-            initializeFonts();
-            setupPanel();
-        } catch (FontFormatException | IOException e) {
-            e.printStackTrace();
-        }
+    public SummaryPanel(FinanceBackend fb) {
+        this.fb = fb;
+        loadFonts();
+        setupPanel();
     }
     
-    private void initializeFonts() throws FontFormatException, IOException {
-        robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
-        interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
-        interExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Inter-ExtraBold.ttf")).deriveFont(14f);
+    private void loadFonts() {
+        try {
+            interExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src/resources/Fonts/Inter-ExtraBold.ttf")).deriveFont(14f);
+            robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src/resources/Fonts/Roboto-ExtraBold.ttf")).deriveFont(40f);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+            interExtraBold = new Font("Arial", Font.PLAIN, 14);
+            robotoExtraBold = new Font("Arial", Font.BOLD, 40);
+        }
     }
     
     private void setupPanel() {
@@ -80,9 +81,9 @@ public class SummaryPanel extends JPanel {
 
         Double remaining = fb.getAccountBalances().get("Cash") + fb.getAccountBalances().get("Bank") + fb.getAccountBalances().get("Digital Wallets") + fb.getAccountBalances().get("Credit Card");
         
-        statsPanel.add(createStatsPanel("Total Income", fb.getTotalIncome(), panelColor, "src\\resources\\Images\\income.png"));
-        statsPanel.add(createStatsPanel("Total Expenses", fb.getTotalExpense(), panelColor,"src\\resources\\Images\\expense.png"));
-        statsPanel.add(createStatsPanel("Remaining Balance", remaining, panelColor, "src\\resources\\Images\\balance.png"));
+        statsPanel.add(createStatsPanel("Total Income", fb.getTotalIncome(), panelColor, "src/resources/Images/income.png"));
+        statsPanel.add(createStatsPanel("Total Expenses", fb.getTotalExpense(), panelColor,"src/resources/Images/expense.png"));
+        statsPanel.add(createStatsPanel("Remaining Balance", remaining, panelColor, "src/resources/Images/balance.png"));
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -213,13 +214,5 @@ public class SummaryPanel extends JPanel {
         textPanel.add(valueField, textGbc);
     
         return textPanel;
-    }
-    
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Summary Panel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 800);
-        frame.add(new SummaryPanel());
-        frame.setVisible(true);
     }
 }

@@ -8,12 +8,13 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 
 public class TransactionsPanel extends JPanel {
-    private FinanceBackend fb = new FinanceBackend();
     private JPanel mainTable;
     private JPanel tablePanel;
     private String currentTableType = "Income"; // Track current table type
+    private FinanceBackend fb;
     
-    public TransactionsPanel() {
+    public TransactionsPanel(FinanceBackend fb) {
+        this.fb = fb;
         setLayout(new BorderLayout());
         createMainContent();
     }
@@ -25,7 +26,7 @@ public class TransactionsPanel extends JPanel {
         JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         titlePanel.setBackground(Color.WHITE);
         
-        JLabel transactionLabel = new JLabel("Transactions");
+        JLabel transactionLabel = new JLabel("All Recorded Transactions");
         transactionLabel.setFont(new Font("Inter", Font.BOLD, 40));
         transactionLabel.setForeground(new Color(22, 66, 60));
         titlePanel.add(transactionLabel);
@@ -66,7 +67,15 @@ public class TransactionsPanel extends JPanel {
         deleteButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 15));
         deleteButton.setPreferredSize(new Dimension(25, 25));
         deleteButton.addActionListener(e -> deleteSelectedRow());
+
+        JButton stopRecurrenceButton = new JButton(resizeIcon("src/resources/Images/stop.png", 25, 25));
+        stopRecurrenceButton.setBackground(new Color(238, 238, 238));
+        stopRecurrenceButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 15));
+        stopRecurrenceButton.setPreferredSize(new Dimension(25, 25));
+        stopRecurrenceButton.addActionListener(e -> updateRecurrenceData());
+
         buttonPanel.add(deleteButton);
+        buttonPanel.add(stopRecurrenceButton);
         
         // Initialize mainTable
         mainTable = fb.getIncomesTable();
@@ -130,7 +139,54 @@ public class TransactionsPanel extends JPanel {
         tablePanel.revalidate();
         tablePanel.repaint();
     }
-    
+    private void updateRecurrenceData() {
+        // Show input dialog for ID
+        String idString = JOptionPane.showInputDialog(this,
+        "Enter the ID to stop reccurence from " + currentTableType + " table:",
+        "End Recurrence",
+        JOptionPane.QUESTION_MESSAGE);
+
+        // Check if user canceled or entered nothing
+        if (idString == null || idString.trim().isEmpty()) {
+            return;
+        }
+
+        try {
+            int id = Integer.parseInt(idString);
+
+            // Confirm deletion
+            int confirm = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to stop reccurence on ID " + id + " from " + currentTableType + "?",
+                "Ending Recurrence Confirmation",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+            if (confirm == JOptionPane.YES_OPTION) {                
+                try {
+                    switch (currentTableType) {
+                        case "Income" -> fb.endRecurring("Income", id);
+                        case "Expense" -> fb.endRecurring("Expense", id);
+                        case "Transfer" -> fb.endRecurring("Transfer", id);
+                    }
+                    loadTransactionData(currentTableType);
+                    JOptionPane.showMessageDialog(this,
+                        "Recurrence Ended.",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE); 
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this,
+                    "Failed to delete record. ID may not exist.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this,
+            "Please enter a valid number for ID",
+            "Invalid Input",
+            JOptionPane.ERROR_MESSAGE);
+        }
+    }
     private void deleteSelectedRow() {
         // Show input dialog for ID
         String idString = JOptionPane.showInputDialog(this,
@@ -185,13 +241,5 @@ public class TransactionsPanel extends JPanel {
         ImageIcon originalIcon = new ImageIcon(path);
         Image scaledImage = originalIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(scaledImage);
-    }
-    
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Transaction Panel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        frame.add(new TransactionsPanel());
-        frame.setVisible(true);
     }
 }

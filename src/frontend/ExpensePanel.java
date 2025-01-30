@@ -13,7 +13,6 @@ public class ExpensePanel extends JPanel {
     private Font interRegular;
     private Font robotoExtraBold;
     private Font smallerInterRegular;
-    private FinanceBackend fb = new FinanceBackend();
 
     // Global Fields for Form Elements
     private JTextField amountField;
@@ -26,24 +25,27 @@ public class ExpensePanel extends JPanel {
 
     private String[] categories = {"Select Category", "Food & Dining", "Leisure & Shopping", "Transportation", "Household",
         "Family & Education", "Health & Wellness", "Other"};
-
     private String[] accounts = {"Select Account", "Bank", "Cash", "Digital Wallets", "Credit Card"};
-
     private String[] recurrences = {"Select Recurrence", "daily", "weekly", "monthly", "yearly"};
 
+    private FinanceBackend fb;
 
-    public ExpensePanel() {
+  
+    public ExpensePanel(FinanceBackend fb) {
+        this.fb = fb;
+        loadFonts();
+
+        setupPanel();
+    }
+    private void loadFonts() {
         try {
             interRegular = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Inter-Regular.ttf")).deriveFont(14f);
             robotoExtraBold = Font.createFont(Font.TRUETYPE_FONT, new File("src\\resources\\Fonts\\Roboto-ExtraBold.ttf")).deriveFont(40f);
             smallerInterRegular = interRegular.deriveFont(12f);
         } catch (FontFormatException | IOException e) {
-            System.out.println("Error loading fonts: " + e.getMessage());
             interRegular = new Font("Arial", Font.PLAIN, 14); // Fallback font
             smallerInterRegular = interRegular.deriveFont(12f);
         }
-
-        setupPanel();
     }
 
     private void setupPanel() {
@@ -282,14 +284,5 @@ public class ExpensePanel extends JPanel {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error saving expense: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Expenses Form Panel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new ExpensePanel());
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
     }
 }

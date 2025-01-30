@@ -15,7 +15,7 @@ public class Transfer extends Transaction{
     }
     public void setToAccount(String toAccount) {
         if (!ACCOUNTS.contains(toAccount))
-            throw new IllegalArgumentException("Invalid account. Allowed accounts: " + String.join(", ", ACCOUNTS));
+            throw new IllegalArgumentException("Please Select an Account.");
         this.toAccount = toAccount;
     }
     public double getTransactionFee(){

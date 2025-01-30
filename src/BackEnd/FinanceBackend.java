@@ -2,11 +2,10 @@ package backend;
 import java.util.HashMap;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.util.List;
 import java.util.Map;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -22,8 +21,6 @@ import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
-
-import java.awt.*;
 
 
 import transactionModels.Expense;
@@ -42,6 +39,7 @@ import java.time.LocalDate;
 
 public class FinanceBackend {
     private HashMap<String, Double> accountBalances = new HashMap<>();
+    private HashMap<String, Double> incomeDeposits = new HashMap<>();
     private HashMap<String, Double> expensePerCategory = new HashMap<>();
     private Double totalIncome;
     private Double totalExpense;
@@ -318,12 +316,36 @@ public class FinanceBackend {
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // All cells are non-editable
+                return false;
             }
         };
-    
+        DefaultTableCellRenderer paddedRenderer = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                JLabel cell = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                cell.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Top, Left, Bottom, Right
+                return cell;
+            }
+        };
+
         JTable table = new JTable(tableModel);
         table.setFillsViewportHeight(true);
+        table.setFont(new Font("Inter", Font.PLAIN, 14));  
+        table.setRowHeight(40); 
+        
+        table.getColumnModel().getColumn(0).setPreferredWidth(30);
+        table.getColumnModel().getColumn(0).setCellRenderer(paddedRenderer);
+
+        for(int i = 1; i < columnNames.length - 1 ; i++){
+            table.getColumnModel().getColumn(i).setPreferredWidth(100);
+            table.getColumnModel().getColumn(i).setCellRenderer(paddedRenderer);
+        }
+        table.getColumnModel().getColumn(columnNames.length - 1).setPreferredWidth(150);
+        table.getColumnModel().getColumn(columnNames.length - 1).setCellRenderer(paddedRenderer);
+
+        table.setBackground(Color.WHITE);
+        table.getTableHeader().setBackground(Color.WHITE);
+        table.getTableHeader().setFont(new Font("Inter", Font.BOLD, 15));
     
         JScrollPane scrollPane = new JScrollPane(table);
         panel.add(scrollPane, BorderLayout.CENTER);
@@ -403,10 +425,33 @@ public class FinanceBackend {
                     return false;
                 }
             };
-
+            DefaultTableCellRenderer paddedRenderer = new DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                    JLabel cell = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    cell.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Top, Left, Bottom, Right
+                    return cell;
+                }
+            };
+    
             JTable table = new JTable(tableModel);
             table.setFillsViewportHeight(true);
-            table.getTableHeader().setReorderingAllowed(false);
+            table.setFont(new Font("Inter", Font.PLAIN, 14));  
+            table.setRowHeight(40); 
+            
+            table.getColumnModel().getColumn(0).setPreferredWidth(30);
+            table.getColumnModel().getColumn(0).setCellRenderer(paddedRenderer);
+
+            for(int i = 1; i < columnNames.length - 1 ; i++){
+                table.getColumnModel().getColumn(i).setPreferredWidth(100);
+                table.getColumnModel().getColumn(i).setCellRenderer(paddedRenderer);
+            }
+            table.getColumnModel().getColumn(columnNames.length - 1).setPreferredWidth(150);
+            table.getColumnModel().getColumn(columnNames.length - 1).setCellRenderer(paddedRenderer);
+    
+            table.setBackground(Color.WHITE);
+            table.getTableHeader().setBackground(Color.WHITE);
+            table.getTableHeader().setFont(new Font("Inter", Font.BOLD, 15));
 
             // Populate table with data
             rs = stmt.executeQuery(fetchDataQuery);
@@ -445,13 +490,37 @@ public class FinanceBackend {
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // All cells are non-editable
+                return false;
             }
         };
-    
+        DefaultTableCellRenderer paddedRenderer = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                JLabel cell = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                cell.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Top, Left, Bottom, Right
+                return cell;
+            }
+        };
+
         JTable table = new JTable(tableModel);
         table.setFillsViewportHeight(true);
-    
+        table.setFont(new Font("Inter", Font.PLAIN, 14));  
+        table.setRowHeight(40); 
+        
+        table.getColumnModel().getColumn(0).setPreferredWidth(30);
+        table.getColumnModel().getColumn(0).setCellRenderer(paddedRenderer);
+
+        for(int i = 1; i < columnNames.length - 1 ; i++){
+            table.getColumnModel().getColumn(i).setPreferredWidth(100);
+            table.getColumnModel().getColumn(i).setCellRenderer(paddedRenderer);
+        }
+        table.getColumnModel().getColumn(columnNames.length - 1).setPreferredWidth(150);
+        table.getColumnModel().getColumn(columnNames.length - 1).setCellRenderer(paddedRenderer);
+
+        table.setBackground(Color.WHITE);
+        table.getTableHeader().setBackground(Color.WHITE);
+        table.getTableHeader().setFont(new Font("Inter", Font.BOLD, 15));
+
         JScrollPane scrollPane = new JScrollPane(table);
         panel.add(scrollPane, BorderLayout.CENTER);
     
@@ -520,7 +589,7 @@ public class FinanceBackend {
 
         // Creating the pie chart
         JFreeChart pieChart = ChartFactory.createPieChart(
-            "Summary of Expenses", 
+            "Expenses Per Category", 
             pieChartDataset, 
             true, 
             true, 
@@ -554,13 +623,13 @@ public class FinanceBackend {
         DefaultCategoryDataset barGraphDataset = new DefaultCategoryDataset();
 
         // Loop through the HashMap and add data to the dataset
-        for (Map.Entry<String, Double> entry : accountBalances.entrySet()) {
+        for (Map.Entry<String, Double> entry : incomeDeposits.entrySet()) {
             barGraphDataset.addValue(entry.getValue(), "Balance", entry.getKey());
         }
 
         // Creating the bar chart
         JFreeChart barChart = ChartFactory.createBarChart(
-            "Summary of Income",
+            "Income Deposits",
             "Account",
             "Amount",
             barGraphDataset,
@@ -608,9 +677,11 @@ public class FinanceBackend {
         String account = income.getAccount();
 
         if(key.equals(keys[0])){
+            incomeDeposits.put(account, incomeDeposits.get(account) + amount);
             accountBalances.put(account, accountBalances.get(account) + amount);
             totalIncome += amount;
         } else if(key.equals(keys[1])){
+            incomeDeposits.put(account, incomeDeposits.get(account) - amount);
             accountBalances.put(account, accountBalances.get(account) - amount);
             totalIncome -= amount;
         }
@@ -732,6 +803,12 @@ public class FinanceBackend {
         accountBalances.put("Cash", 0.0);
         accountBalances.put("Digital Wallets", 0.0);
         accountBalances.put("Credit Card", 0.0);
+
+        incomeDeposits.put("Bank", 0.0);
+        incomeDeposits.put("Cash", 0.0);
+        incomeDeposits.put("Digital Wallets", 0.0);
+        incomeDeposits.put("Credit Card", 0.0);
+
         expensePerCategory.put("Food & Dining", 0.0);
         expensePerCategory.put("Leisure & Shopping", 0.0);
         expensePerCategory.put("Transportation", 0.0);

@@ -26,7 +26,7 @@ public class TransactionsPanel extends JPanel {
         JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         titlePanel.setBackground(Color.WHITE);
         
-        JLabel transactionLabel = new JLabel("All Recorded Transactions");
+        JLabel transactionLabel = new JLabel("DATABASE");
         transactionLabel.setFont(new Font("Inter", Font.BOLD, 40));
         transactionLabel.setForeground(new Color(22, 66, 60));
         titlePanel.add(transactionLabel);

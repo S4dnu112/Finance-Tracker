@@ -299,7 +299,7 @@ public class TransferPanel extends JPanel {
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Invalid input for amount. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (IllegalArgumentException e) {
-                JOptionPane.showMessageDialog(this, "Please select an account", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Error saving transfer data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }

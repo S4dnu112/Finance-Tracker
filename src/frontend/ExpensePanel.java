@@ -27,6 +27,7 @@ public class ExpensePanel extends JPanel {
         "Family & Education", "Health & Wellness", "Other"};
     private String[] accounts = {"Select Account", "Bank", "Cash", "Digital Wallets", "Credit Card"};
     private String[] recurrences = {"Select Recurrence", "daily", "weekly", "monthly", "yearly"};
+    private boolean successfulSave = false;
 
     private FinanceBackend fb;
 
@@ -243,7 +244,10 @@ public class ExpensePanel extends JPanel {
         saveButton.setForeground(Color.WHITE);
         saveButton.setFocusable(false);
         saveButton.setPreferredSize(new Dimension(saveButton.getPreferredSize().width + 20, 50));
-        saveButton.addActionListener(e -> saveExpense());
+        saveButton.addActionListener(e -> {
+            saveExpense();
+            if(successfulSave) PanelManager.getInstance().showPanel("Home");
+        });
         return saveButton;
     }
 
@@ -275,8 +279,8 @@ public class ExpensePanel extends JPanel {
             }
 
             fb.save(new Expense(amount, category, account, LocalDate.now().toString(), recurrence, startDate, endDate, description));
-
             JOptionPane.showMessageDialog(this, "Expense saved successfully!");
+            successfulSave = true;
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid input for amount. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (IllegalArgumentException e) {

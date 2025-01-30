@@ -109,8 +109,17 @@ public class MainFrame extends JFrame {
         JButton homeButton = createHeaderButton("HOME", true);
         JButton settingsButton = createHeaderButton("SETTINGS", false);
 
-        homeButton.addActionListener(e -> PanelManager.getInstance().showPanel("Home"));
-        settingsButton.addActionListener(e -> PanelManager.getInstance().showPanel("Settings"));
+        homeButton.addActionListener(e -> {
+            homeButton.setFont(homeButton.getFont().deriveFont(Font.BOLD));
+            settingsButton.setFont(homeButton.getFont().deriveFont(Font.PLAIN));
+            PanelManager.getInstance().showPanel("Home");
+        });
+
+        settingsButton.addActionListener(e -> {
+            settingsButton.setFont(homeButton.getFont().deriveFont(Font.BOLD));
+            homeButton.setFont(homeButton.getFont().deriveFont(Font.PLAIN));
+            PanelManager.getInstance().showPanel("Settings");
+        });
 
         buttonPanel.add(homeButton);
         buttonPanel.add(settingsButton);

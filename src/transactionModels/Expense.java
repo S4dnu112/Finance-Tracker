@@ -17,7 +17,7 @@ public class Expense extends Transaction {
     }
     public void setCategory(String category) {
         if (!CATEGORIES.contains(category))
-            throw new IllegalArgumentException("Invalid category. Allowed categories: " + String.join(", ", CATEGORIES));
+            throw new IllegalArgumentException("Please Select a Category.");
         this.category = category;
     }
 }

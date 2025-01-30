@@ -62,8 +62,7 @@ public abstract class Transaction {
     }
     public void setAccount(String account) {
         if (!ACCOUNTS.contains(account))
-            throw new IllegalArgumentException("Invalid account. Allowed accounts: " + 
-            String.join(", ", ACCOUNTS));
+            throw new IllegalArgumentException("Please Select an Account.");
         this.account = account;
     }
     public void setDateAdded(String dateAdded) {
@@ -107,6 +106,9 @@ public abstract class Transaction {
         LocalDate start = this.recurrenceStartDate.equals("N/A") ?  LocalDate.parse(this.dateAdded): LocalDate.parse(this.recurrenceStartDate);
         LocalDate end = this.recurrenceEndDate.equals("N/A") ? LocalDate.now() : LocalDate.parse(this.recurrenceEndDate);
 
+        if (start.isAfter(end))
+            throw new IllegalArgumentException("Start date is after end date");
+            
         switch (recurrence) {
             case "daily":
                 return (ChronoUnit.DAYS.between(start, end) + 1) * this.baseAmount;

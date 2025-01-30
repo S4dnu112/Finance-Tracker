@@ -273,6 +273,8 @@ public class IncomePanel extends JPanel {
             successfulSave = true;
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid input for amount. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error saving income: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

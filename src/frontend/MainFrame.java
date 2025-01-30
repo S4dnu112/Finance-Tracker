@@ -135,9 +135,17 @@ public class MainFrame extends JFrame {
 
     // kaya may name eh kasi dahil dito: contentPanel.add(createHomePanel(), "Home");
     private void showPanel(String panelName) {
+        contentPanel.removeAll();
+        switch (panelName) {
+            case "Home" -> contentPanel.add(new HomePanel(fb), "Home");
+            case "Settings" -> contentPanel.add(new SettingsPanel(fb, robotoExtraBold, interRegular, interExtraBold), "Settings");
+        }
+        contentPanel.revalidate();
+        contentPanel.repaint();
         CardLayout layout = (CardLayout) contentPanel.getLayout();
         layout.show(contentPanel, panelName);
     }
+    
 
 
     public static void main(String[] args) {

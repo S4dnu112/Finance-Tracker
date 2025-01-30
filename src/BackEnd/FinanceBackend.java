@@ -8,6 +8,12 @@ import java.util.Map;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -40,6 +46,7 @@ public class FinanceBackend {
     private Double totalIncome;
     private Double totalExpense;
     private final String DB_URL = "jdbc:sqlite:src\\database\\transactions.db";
+    private final String userDataFile = "src\\database\\userData.txt";
 
 
     // BACKEND ATTRIBUTES (AGGREGATES)
@@ -67,6 +74,32 @@ public class FinanceBackend {
         }
     }   
 
+
+
+    /*
+     * READ AND WRITE USER DATA
+     */
+    public void writeUserData(Map<String, String> data) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(userDataFile))) {
+            for (Map.Entry<String, String> entry : data.entrySet()) {
+                writer.write(entry.getKey() + "=" + entry.getValue());
+                writer.newLine();
+            }
+        }
+    }
+    public Map<String, String> readUserData() throws Exception {
+        Map<String, String> data = new HashMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(userDataFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("=", 2);
+                if (parts.length == 2) {
+                    data.put(parts[0], parts[1]);
+                }
+            }
+        }
+        return data;
+    }
     /*
      * SAVING DATA TO THE SQLITE DATABASE AND UPDATING THE AGGREGATES
      */
@@ -273,6 +306,9 @@ public class FinanceBackend {
         }
     }
 
+    /*
+     * FOR DISPLAYING ALL TRANSACTIONS
+     */
     public JPanel getIncomesTable() {
         JPanel panel = new JPanel(new BorderLayout());
     

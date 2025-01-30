@@ -10,10 +10,17 @@ public class HomePanel extends JPanel {
     private JTextField cashTextField;
     private JTextField digitalWalletTextField;
     private JTextField creditCardTextField;
+    private String userName;
+    
     FinanceBackend fb;
 
     public HomePanel(FinanceBackend fb) {
         this.fb = fb;
+        try {
+            userName = fb.readUserData().get("name");
+        } catch (Exception e) {
+            userName = "User";
+        }
 
         // ito na mismo ung maginteract
         setLayout(new BorderLayout(20, 20));
@@ -43,18 +50,10 @@ public class HomePanel extends JPanel {
         JPanel welcomePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         welcomePanel.setOpaque(false);
 
-        JLabel helloLabel = new JLabel("Hello,");
+        JLabel helloLabel = new JLabel("Hello, " + userName);
         helloLabel.setFont(new Font("Roboto", Font.BOLD, 36));
         helloLabel.setForeground(Color.BLACK);
-
-        JTextField nameTextField = new JTextField(15);
-        nameTextField.setFont(new Font("Roboto", Font.BOLD, 36));
-        nameTextField.setForeground(Color.BLACK);
-        nameTextField.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-
         welcomePanel.add(helloLabel);
-        welcomePanel.add(nameTextField);
-
         return welcomePanel;
     }
 

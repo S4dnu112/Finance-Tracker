@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
@@ -23,9 +25,11 @@ public class SettingsPanel extends JPanel {
     private final Color updateDefaultColor = new Color(150, 200, 180);
     private final Color updateActiveColor = new Color(22, 70, 65);
     private boolean isChanged = false;
+    private FinanceBackend Fb;
 
     public SettingsPanel(FinanceBackend Fb, Font robotoExtraBold, Font interRegular, Font interExtraBold) {
 
+        this.Fb = Fb;
         this.robotoExtraBold = robotoExtraBold;
         this.interRegular = interRegular;
         this.interExtraBold = interExtraBold;
@@ -220,6 +224,13 @@ public class SettingsPanel extends JPanel {
                 setChanged(false);
                 nameField.setEditable(false);
                 nameField.setBackground(uneditableColor);
+                Map<String, String> name = new HashMap<>();
+                name.put("name", nameField.getText());
+                try {
+                    Fb.writeUserData(name);
+                } catch (IOException ioException) {
+                    System.err.println("Error writing user data on settings panel, find user data method on backend");
+                }
                 System.out.println("Changes have been updated!");
             }
         });

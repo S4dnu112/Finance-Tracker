@@ -16,7 +16,6 @@ public class HomePanel extends JPanel {
 
     public HomePanel(FinanceBackend fb) {
         this.fb = fb;
-        System.out.println(fb.getAccountBalances().get("Bank"));
         try {
             userName = fb.readUserData().get("name");
         } catch (Exception e) {

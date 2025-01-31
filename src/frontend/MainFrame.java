@@ -58,7 +58,7 @@ public class MainFrame extends JFrame {
 
     private JPanel createHeaderPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(new Color(22, 70, 65));
+        panel.setBackground(new Color(22, 66, 60));
         panel.setPreferredSize(new Dimension(1280, 70));
         panel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
 
@@ -85,7 +85,7 @@ public class MainFrame extends JFrame {
 
     private JPanel createLogoPanel() {
         JPanel logoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        logoPanel.setBackground(new Color(22, 70, 65));
+        logoPanel.setBackground(new Color(22, 66, 60));
 
         ImageIcon pennyIcon = new ImageIcon("src\\resources\\Images\\logo.png");
         Image scaledImage = pennyIcon.getImage().getScaledInstance(42, 35, Image.SCALE_REPLICATE);
@@ -104,7 +104,7 @@ public class MainFrame extends JFrame {
 
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
-        buttonPanel.setBackground(new Color(22, 70, 65));
+        buttonPanel.setBackground(new Color(22, 66, 60));
 
         JButton homeButton = createHeaderButton("HOME", true);
         JButton settingsButton = createHeaderButton("SETTINGS", false);
@@ -129,7 +129,7 @@ public class MainFrame extends JFrame {
 
     private JButton createHeaderButton(String text, boolean isBold) {
         JButton button = new JButton(text);
-        button.setBackground(new Color(22, 70, 65));
+        button.setBackground(new Color(22, 66, 60));
         button.setForeground(Color.WHITE);
         button.setFont(isBold ? interRegular.deriveFont(Font.BOLD) : interRegular);
         button.setBorderPainted(false);

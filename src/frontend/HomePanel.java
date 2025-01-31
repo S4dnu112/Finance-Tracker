@@ -75,7 +75,7 @@ public class HomePanel extends JPanel {
         JPanel welcomePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, PADDING / 2, 0));
         welcomePanel.setOpaque(false);
 
-        JLabel helloLabel = new JLabel("Hello, " + userName);
+        JLabel helloLabel = new JLabel("Hello, " + userName + "!");
         helloLabel.setFont(HEADER_FONT);
         helloLabel.setForeground(Color.BLACK);
         welcomePanel.add(helloLabel);

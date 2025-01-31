@@ -29,7 +29,6 @@ public class IncomePanel extends JPanel {
     private FinanceBackend fb;
 
     public IncomePanel(FinanceBackend fb) {
-        System.out.println(fb.getAccountBalances().get("Bank"));
         this.fb = fb;
         loadFonts();
         setupPanel();

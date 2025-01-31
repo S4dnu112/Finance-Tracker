@@ -71,6 +71,7 @@ public class ExpensePanel extends JPanel {
 
         // Title
         JLabel title = new JLabel("Add Expenses", SwingConstants.CENTER);
+        title.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         title.setFont(robotoExtraBold);
         title.setForeground(new Color(22, 70, 65));
         gbc.gridwidth = 2;

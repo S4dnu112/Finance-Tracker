@@ -632,7 +632,7 @@ public class FinanceBackend {
 
         // Loop through the HashMap and add data to the dataset
         for (Map.Entry<String, Double> entry : incomeDeposits.entrySet()) {
-            barGraphDataset.addValue(entry.getValue(), "Balance", entry.getKey());
+            barGraphDataset.addValue(entry.getValue(), "Deposits", entry.getKey());
         }
 
         // Creating the bar chart

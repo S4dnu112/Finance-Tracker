@@ -100,6 +100,7 @@ public class TransferPanel extends JPanel {
 
             // Title
             JLabel title = new JLabel("Transfer Money", SwingConstants.CENTER);
+            title.setBorder(BorderFactory.createEmptyBorder(0, 0, 40, 0));
             title.setFont(robotoExtraBold);
             title.setForeground(new Color(22, 66, 60));
             gbc.gridwidth = 2;
@@ -210,7 +211,7 @@ public class TransferPanel extends JPanel {
             JLabel dateLabel = new JLabel(label);
             dateLabel.setFont(interRegular);
             gbc.gridx = x;
-            gbc.gridy = 0;
+            gbc.gridy = 6;
             panel.add(dateLabel, gbc);
     
             JTextField dateField = new JTextField("yyyy-mm-dd");

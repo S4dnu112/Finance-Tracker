@@ -173,9 +173,15 @@ public class TransactionsPanel extends JPanel {
                         "Recurrence Ended.",
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE); 
-                } catch (Exception e) {
+                } catch (IllegalArgumentException e) {
                     JOptionPane.showMessageDialog(this,
-                    "Failed to delete record. ID may not exist.",
+                    e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+                }
+                catch (Exception e) {
+                    JOptionPane.showMessageDialog(this,
+                    "Error updating",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
                 }
@@ -224,7 +230,7 @@ public class TransactionsPanel extends JPanel {
                         JOptionPane.INFORMATION_MESSAGE); 
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(this,
-                    "Failed to delete record. ID may not exist.",
+                    e.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
                 }

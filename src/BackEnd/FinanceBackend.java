@@ -1,12 +1,12 @@
 package backend;
-import java.util.HashMap;
+
+import java.sql.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.util.Map;
-
 import java.awt.*;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -22,19 +22,13 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-
 import transactionModels.Expense;
 import transactionModels.Income;
 import transactionModels.Transfer;
 
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.time.LocalDate;
 
 public class FinanceBackend {
@@ -267,42 +261,56 @@ public class FinanceBackend {
             deleteStmt.setInt(1, transactionID);
             int rowsDeleted = deleteStmt.executeUpdate();
 
-            if (rowsDeleted > 0) {
-                System.out.println("Transaction with ID " + transactionID + " successfully deleted from " + tableName + " table.");
-            } else {
-                System.err.println("Transaction with ID " + transactionID + " not found in " + tableName + " table.");
-            }
+            if (rowsDeleted == 0)
+                throw new IllegalArgumentException("Transaction with ID " + transactionID + " cannot be found or has already been ended.");
+
         } catch (SQLException e) {
             System.err.println("Database error while deleting transaction: " + e.getMessage());
         }
     }
 
-    
 
-    /*
-     * ENDS A RECURRENCE TRANSACTION
-     */
+
     public void endRecurring(String transaction, int transactionID) {
         String tableName = validateTransactionName(transaction);
-    
-        String updateQuery = "UPDATE " + tableName + " SET End_Date = ? WHERE ID = ?";
         
+        String checkQuery = "SELECT End_Date FROM " + tableName + " WHERE ID = ?";
+        String updateQuery = "UPDATE " + tableName + " SET End_Date = ? WHERE ID = ?";
+
         try (Connection db = DriverManager.getConnection(DB_URL)) {
+            try (PreparedStatement checkStmt = db.prepareStatement(checkQuery)) {
+                checkStmt.setInt(1, transactionID);
+                ResultSet rs = checkStmt.executeQuery();
+
+                if (!rs.next()) {
+                    throw new IllegalArgumentException(String.format("%s with ID %d does not exist.", transaction, transactionID));
+                }
+                
+                String endDateString = rs.getString("End_Date");
+
+                if(endDateString.equals("N/A")) {
+                    throw new IllegalArgumentException(String.format("%s with ID %d is not a recurrence transaction.", transaction, transactionID));
+                } else {
+                    LocalDate endDate = LocalDate.parse(endDateString);
+                    if (!endDate.isAfter(LocalDate.now())) {
+                        throw new IllegalArgumentException(String.format("%s with ID %d has already ended on %s.", transaction, transactionID, endDate));
+                    }
+                }
+                
+            }
+
+            // If we reach here, it means we need to set End_Date to today
             try (PreparedStatement updateStmt = db.prepareStatement(updateQuery)) {
                 updateStmt.setString(1, LocalDate.now().toString());
                 updateStmt.setInt(2, transactionID);
-                int rowsUpdated = updateStmt.executeUpdate();
-    
-                if (rowsUpdated > 0) {
-                    System.out.println("Recurring transaction with ID " + transactionID + " has been successfully ended.");
-                } else {
-                    System.err.println("Transaction with ID " + transactionID + " cannot be found or has already been ended.");
-                }
+                updateStmt.executeUpdate();
             }
+            
         } catch (SQLException e) {
             System.err.println("Database error while ending recurrence transaction: " + e.getMessage());
         }
     }
+
 
     /*
      * FOR DISPLAYING ALL TRANSACTIONS

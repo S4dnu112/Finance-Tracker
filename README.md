@@ -25,6 +25,7 @@ PennyWise is a simple finance tracker that allows users to track their income, e
 ## Requirements
 - Sqlite
 - Java
+  
 External dependencies are store on the lib folder
 
 ## How to Run the Program

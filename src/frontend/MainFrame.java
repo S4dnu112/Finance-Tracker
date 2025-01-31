@@ -136,11 +136,4 @@ public class MainFrame extends JFrame {
         button.setFocusable(false);
         return button;
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            MainFrame frame = new MainFrame();
-            frame.setVisible(true);
-        });
-    }
 }

@@ -30,15 +30,15 @@ PennyWise is a simple finance tracker that allows users to track their income, e
 ## How to Run the Program
 Compile
 ```
-javac -cp "lib/*" -sourcepath src src/backend/FinanceBackend.java src/transactionModels/*.java src/frontend/*.java;
+javac -cp "lib/*" -sourcepath src src/backend/FinanceBackend.java src/transactionModels/*.java src/frontend/*.java src/Finance_Tracker.java;
 ```
 Run
 ```
-java -cp "src;lib/*" frontend.MainFrame
+java -cp "src;lib/*" Finance_Tracker
 ```
 Combined
 ```
-javac -cp "lib/*" -sourcepath src src/backend/FinanceBackend.java src/transactionModels/*.java src/frontend/*.java; java -cp "src;lib/*" frontend.MainFrame
+javac -cp "lib/*" -sourcepath src src/backend/FinanceBackend.java src/transactionModels/*.java src/frontend/*.java src/Finance_Tracker.java; java -cp "src;lib/*" Finance_Tracker
 ```
 
 

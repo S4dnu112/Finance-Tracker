@@ -248,7 +248,8 @@ public class SettingsPanel extends JPanel {
                 Map<String, String> name = new HashMap<>();
                 name.put("name", nameField.getText());
                 try {
-                    Fb.writeUserData(name);
+                    if(nameField.getText().trim() != "")
+                        Fb.writeUserData(name);
                     System.out.println(reindexComboBox.getSelectedItem().toString());
                     int selected = 0;
                     if((selected = reindexComboBox.getSelectedIndex()) != 0)

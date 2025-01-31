@@ -99,7 +99,7 @@ public class HomePanel extends JPanel {
 
         // Header
         JLabel headerLabel = new JLabel(("<html><div style='text-align: center;'>Account<br> Balances</div></html>"));
-        headerLabel.setFont(new Font("Roboto", Font.BOLD, 40));
+        headerLabel.setFont(new Font("Roboto", Font.BOLD, 35));
         headerLabel.setHorizontalAlignment(SwingConstants.CENTER);
         headerLabel.setForeground(Color.WHITE);
         headerLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, PADDING, 0));

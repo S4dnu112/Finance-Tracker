@@ -274,7 +274,7 @@ public class FinanceBackend {
     public void endRecurring(String transaction, int transactionID) {
         String tableName = validateTransactionName(transaction);
         
-        String checkQuery = "SELECT End_Date FROM " + tableName + " WHERE ID = ?";
+        String checkQuery = "SELECT End_Date, Recurrence FROM " + tableName + " WHERE ID = ?";
         String updateQuery = "UPDATE " + tableName + " SET End_Date = ? WHERE ID = ?";
 
         try (Connection db = DriverManager.getConnection(DB_URL)) {
@@ -287,16 +287,18 @@ public class FinanceBackend {
                 }
                 
                 String endDateString = rs.getString("End_Date");
+                String recurrence = rs.getString("Recurrence");
 
-                if(endDateString.equals("N/A")) {
+                if(recurrence.equals("N/A")) {
                     throw new IllegalArgumentException(String.format("%s with ID %d is not a recurrence transaction.", transaction, transactionID));
                 } else {
-                    LocalDate endDate = LocalDate.parse(endDateString);
-                    if (!endDate.isAfter(LocalDate.now())) {
-                        throw new IllegalArgumentException(String.format("%s with ID %d has already ended on %s.", transaction, transactionID, endDate));
+                    if(!endDateString.equals("N/A")) {
+                        LocalDate endDate = LocalDate.parse(endDateString);
+                        if (!endDate.isAfter(LocalDate.now())) {
+                            throw new IllegalArgumentException(String.format("%s with ID %d has already ended on %s.", transaction, transactionID, endDate));
+                        }
                     }
                 }
-                
             }
 
             // If we reach here, it means we need to set End_Date to today

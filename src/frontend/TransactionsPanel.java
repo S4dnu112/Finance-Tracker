@@ -179,6 +179,7 @@ public class TransactionsPanel extends JPanel {
                     JOptionPane.ERROR_MESSAGE);
                 }
                 catch (Exception e) {
+                    e.printStackTrace();
                     JOptionPane.showMessageDialog(this,
                     "Error updating",
                     "Error",

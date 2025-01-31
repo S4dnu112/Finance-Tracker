@@ -8,7 +8,7 @@ PennyWise is a simple finance tracker that allows users to track their income, e
 
 ![AddIncome_Panel](docs/AddIncomePanel.png)
 
-![AddExpense_Panel](docs/AddExpensesPanel.png)
+![AddExpense_Panel](docs/AddExpensePanel.png)
 
 ![Transaction_History](docs/TransactionsHistory.png)
 

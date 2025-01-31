@@ -25,7 +25,7 @@ public class TransferPanel extends JPanel {
     private FinanceBackend fb;
 
     private String[] accountsCombo = {"Select Account", "Bank", "Cash", "Digital Wallets", "Credit Card"};
-    private String[] recurrenceCombo = {"Select Recurrence", "Daily", "Weekly", "Monthly"};
+    private String[] recurrenceCombo = {"Select Recurrence", "daily", "weekly", "monthly", "yearly"};
     private boolean isVerified = false;
 
     public TransferPanel(FinanceBackend fb) {
@@ -182,7 +182,7 @@ public class TransferPanel extends JPanel {
             field.setPreferredSize(new Dimension(250, 40));
             field.setFont(interRegular);
             field.setBackground(new Color(196, 218, 210));
-            field.setBorder(new EmptyBorder(0, 20, 0, 0));
+            field.setBorder(new EmptyBorder(0, 5, 0, 0));
             return field;
         }
 
@@ -271,7 +271,7 @@ public class TransferPanel extends JPanel {
                 verifyTransfer();
                 if (isVerified) {
                     double totalAmount = transferData.getBaseAmount() + transferData.getTransactionFee(); 
-                    transferMoney2Panel.updateAmount(""+totalAmount);
+                    transferMoney2Panel.updateAmount(""+totalAmount, ""+transferData.getBaseAmount());
                     cardLayout.show(contentPanel, "TransferMoney2");
                 }
             });
@@ -382,8 +382,7 @@ public class TransferPanel extends JPanel {
             mainPanel.add(totalValue, gbc);
 
             // Confirmation message
-            JLabel confirmMsg = new JLabel("<html>Please ensure your account has enough " +
-                "balance<br> to cover the Transfer amount.</html>");
+            JLabel confirmMsg = new JLabel("<html>This change will automatically reflect to your <br>account balances.</html>");
             confirmMsg.setFont(interRegular);
             gbc.gridwidth = 2;
             gbc.gridx = 0;
@@ -411,8 +410,8 @@ public class TransferPanel extends JPanel {
             confirmButton.setFocusPainted(false);
             confirmButton.addActionListener(e -> {
                 fb.save(transferData);
-                JOptionPane.showMessageDialog(this, "Transfer Successful!", 
-                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Expense saved Successfully!\nReflected Amount: " + "\u20B1 " + transferData.getTotalAmountWithFee(), 
+            "Success", JOptionPane.INFORMATION_MESSAGE);
                 PanelManager.getInstance().showPanel("Home");
             });
             return confirmButton;
@@ -437,10 +436,11 @@ public class TransferPanel extends JPanel {
             return rightPanel;
         }
 
-        public void updateAmount(String amount) {
-            String formattedAmount = "PHP " + amount;
-            amountValue.setText(formattedAmount);
-            totalValue.setText(formattedAmount);
+        public void updateAmount(String totalAmount, String amount) {
+            String totalAmountFormat = "PHP " + totalAmount;
+            String baseAmountFormat = "PHP " + amount;
+            amountValue.setText(baseAmountFormat);
+            totalValue.setText(totalAmountFormat);
         }
     }
 }

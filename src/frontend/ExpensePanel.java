@@ -154,7 +154,7 @@ public class ExpensePanel extends JPanel {
         field.setFont(interRegular);
         field.setBackground(new Color(196, 218, 210));
         field.setForeground(new Color(22, 70, 65));
-        field.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+        field.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         return field;
     }
 
@@ -278,9 +278,10 @@ public class ExpensePanel extends JPanel {
                 startDate = "N/A";
                 endDate = "N/A";
             }
-
-            fb.save(new Expense(amount, category, account, LocalDate.now().toString(), recurrence, startDate, endDate, description));
-            JOptionPane.showMessageDialog(this, "Expense saved successfully!");
+            Expense expense = new Expense(amount, category, account, LocalDate.now().toString(), recurrence, startDate, endDate, description);
+            fb.save(expense);
+            JOptionPane.showMessageDialog(this, "Expense saved Successfully!\nReflected Amount: " + "\u20B1 " + expense.getTotalAmount(), 
+            "Success", JOptionPane.INFORMATION_MESSAGE);            
             successfulSave = true;
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid input for amount. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);

@@ -27,6 +27,12 @@ public class SettingsPanel extends JPanel {
     private boolean isChanged = false;
     private FinanceBackend Fb;
 
+    private String[] usageOptions = {"Select Purpose", "Student", "Personal", "Small business"};
+    private String[] reindexOptions = {"Select Table", "Income table", "Expense table", "Transfer table"};
+    private JComboBox<String> usageComboBox;
+    private JComboBox<String> reindexComboBox;
+
+
     public SettingsPanel(FinanceBackend Fb) {
 
         this.Fb = Fb;
@@ -133,10 +139,10 @@ public class SettingsPanel extends JPanel {
         gbc.gridy = 4;
         panel.add(purposeLabel, gbc);
 
-        JComboBox<String> purposeComboBox = createStyledComboBox("Select Purpose");
+        usageComboBox = createStyledComboBox(usageOptions);
         gbc.insets = new Insets(5, 5, 30, 5);
         gbc.gridy = 5;
-        panel.add(purposeComboBox, gbc);
+        panel.add(usageComboBox, gbc);
     }
 
     private void addReindexSection(JPanel panel, GridBagConstraints gbc) {
@@ -146,19 +152,20 @@ public class SettingsPanel extends JPanel {
         gbc.gridy = 6;
         panel.add(reindexLabel, gbc);
 
-        JComboBox<String> reindexComboBox = createStyledComboBox("Select Option");
+        reindexComboBox = createStyledComboBox(reindexOptions);
         gbc.insets = new Insets(5, 5, 100, 5);
         gbc.gridy = 7;
         panel.add(reindexComboBox, gbc);
     }
 
-    private JComboBox<String> createStyledComboBox(String defaultOption) {
-        JComboBox<String> comboBox = new JComboBox<>(new String[]{defaultOption});
+    private JComboBox<String> createStyledComboBox(String[] options) {
+        JComboBox<String> comboBox = new JComboBox<>(options);
         comboBox.setFont(interRegular.deriveFont(Font.ITALIC));
         comboBox.setBackground(new Color(196, 218, 210));
         comboBox.setForeground(new Color(22, 70, 65));
         comboBox.setBorder(BorderFactory.createEmptyBorder());
         comboBox.setPreferredSize(new Dimension(300, 30));
+        comboBox.setEnabled(false);
         return comboBox;
     }
 
@@ -169,6 +176,8 @@ public class SettingsPanel extends JPanel {
 
         JButton cancelButton = createStyledButton("CANCEL", new Color(150, 150, 150));
         updateButton.setPreferredSize(new Dimension(150, 50));
+        updateButton.setMinimumSize(new Dimension(150, 50));
+        updateButton.setMaximumSize(new Dimension(150, 50));        
         updateButton.setBackground(updateDefaultColor);
         updateButton.setForeground(Color.WHITE);
         updateButton.setFont(interRegular);
@@ -197,6 +206,10 @@ public class SettingsPanel extends JPanel {
         editButton.addActionListener(e -> {
             nameField.setEditable(true);
             nameField.setBackground(editableColor);
+            usageComboBox.setSelectedIndex(0);
+            usageComboBox.setEnabled(true);
+            reindexComboBox.setSelectedIndex(0);
+            reindexComboBox.setEnabled(true);
             setChanged(true);
         });
         
@@ -236,6 +249,11 @@ public class SettingsPanel extends JPanel {
                 name.put("name", nameField.getText());
                 try {
                     Fb.writeUserData(name);
+                    System.out.println(reindexComboBox.getSelectedItem().toString());
+                    int selected = 0;
+                    if((selected = reindexComboBox.getSelectedIndex()) != 0)
+                        Fb.reindex(reindexComboBox.getSelectedItem().toString());
+                        System.out.println(reindexComboBox.getSelectedItem().toString());
                 } catch (IOException ioException) {
                     System.err.println("Error writing user data on settings panel, find user data method on backend");
                 }
@@ -247,6 +265,10 @@ public class SettingsPanel extends JPanel {
         cancelButton.addActionListener(e -> {
             nameField.setEditable(false);
             nameField.setBackground(uneditableColor);
+            usageComboBox.setSelectedIndex(-1);
+            usageComboBox.setEnabled(false);
+            reindexComboBox.setSelectedIndex(-1);
+            reindexComboBox.setEnabled(false);
             setChanged(false);
             System.out.println("Changes were canceled.");
         });

@@ -4,7 +4,6 @@ import backend.FinanceBackend;
 
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 
 public class TransactionsPanel extends JPanel {

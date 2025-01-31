@@ -311,6 +311,41 @@ public class FinanceBackend {
         }
     }
 
+    public void reindex(String tableName) {
+        String dropStatement = "DROP TABLE IF EXISTS ";
+    
+        try (Connection db = DriverManager.getConnection(DB_URL)) {
+            Statement stmt = db.createStatement();
+            switch(tableName) {
+                case "Income table" -> {
+                    ArrayList<Income> incomes = getIncomeData(db);
+                    dropStatement += "incomes";
+                    stmt.executeUpdate(dropStatement);
+                    for(Income income : incomes)
+                        save(income);  
+                }
+                case "Expense table" -> {
+                    ArrayList<Expense> expenses = getExpenseData(db);
+                    dropStatement += "expenses";
+                    stmt.executeUpdate(dropStatement);
+                    for(Expense expense : expenses)
+                        save(expense);  
+                }
+                case "Transfer table" -> {
+                    ArrayList<Transfer> transfers = getTransferData(db);
+                    dropStatement += "transfers";
+                    stmt.executeUpdate(dropStatement);
+                    for(Transfer transfer : transfers)
+                        save(transfer); 
+                }
+ 
+            }
+        } catch (SQLException e) {
+            System.err.println("Database error (Constructor): " + e.getMessage());
+        }
+    }
+    
+
 
     /*
      * FOR DISPLAYING ALL TRANSACTIONS
@@ -715,13 +750,13 @@ public class FinanceBackend {
         String fromAccount = transfer.getAccount();
         String toAccount = transfer.getToAccount();
         Double amount = transfer.getTotalAmount();
-        Double transactionFee = transfer.getTransactionFee();
+        Double amountWithFee = transfer.getTotalAmountWithFee();
         
         if(key.equals(keys[0])){
-            accountBalances.put(fromAccount, accountBalances.get(fromAccount) - amount - transactionFee);
+            accountBalances.put(fromAccount, accountBalances.get(fromAccount) - amountWithFee);
             accountBalances.put(toAccount, accountBalances.get(toAccount) + amount);
         } else if(key.equals(keys[1])){
-            accountBalances.put(fromAccount, accountBalances.get(fromAccount) + amount + transactionFee);
+            accountBalances.put(fromAccount, accountBalances.get(fromAccount) + amountWithFee);
             accountBalances.put(toAccount, accountBalances.get(toAccount) - amount);
         }
     }

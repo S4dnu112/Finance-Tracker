@@ -248,17 +248,13 @@ public class SettingsPanel extends JPanel {
                 Map<String, String> name = new HashMap<>();
                 name.put("name", nameField.getText());
                 try {
-                    if(nameField.getText().trim() != "")
+                    if(!nameField.getText().trim().isEmpty())
                         Fb.writeUserData(name);
-                    System.out.println(reindexComboBox.getSelectedItem().toString());
-                    int selected = 0;
-                    if((selected = reindexComboBox.getSelectedIndex()) != 0)
+                    if((reindexComboBox.getSelectedIndex()) != 0)
                         Fb.reindex(reindexComboBox.getSelectedItem().toString());
-                        System.out.println(reindexComboBox.getSelectedItem().toString());
                 } catch (IOException ioException) {
                     System.err.println("Error writing user data on settings panel, find user data method on backend");
                 }
-                System.out.println("Changes have been updated!");
             }
         });
 
@@ -271,7 +267,6 @@ public class SettingsPanel extends JPanel {
             reindexComboBox.setSelectedIndex(-1);
             reindexComboBox.setEnabled(false);
             setChanged(false);
-            System.out.println("Changes were canceled.");
         });
     }
 

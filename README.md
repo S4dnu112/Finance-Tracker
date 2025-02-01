@@ -17,6 +17,7 @@ PennyWise is a simple finance tracker that allows users to track their income, e
 - Add an expense data
 - Transfer money between different accounts
 - Specify recurrence transactions (income, expense transfer)
+- Set a future transaction
 - Delete a transaction
 - End a recurring transaction
 - View aggregates (such as balances per account and expenses per category)
@@ -25,7 +26,7 @@ PennyWise is a simple finance tracker that allows users to track their income, e
 ## Requirements
 - Sqlite
 - Java
-
+  > External dependencies are already in the lib folder 
 
 ## How to Run the Program
 Compile
@@ -40,5 +41,11 @@ Combined
 ```
 javac -cp "lib/*" -sourcepath src src/backend/FinanceBackend.java src/transactionModels/*.java src/frontend/*.java src/Finance_Tracker.java; java -cp "src;lib/*" Finance_Tracker
 ```
+
+## Contributors
+- [![DLJocson](https://github.com/DLJocson.png?size=50)](https://github.com/DLJocson)
+[![DLJocson](https://github.com/DLJocson.png?size=50)](https://github.com/DLJocson)
+
+
 
 

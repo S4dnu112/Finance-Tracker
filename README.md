@@ -43,12 +43,54 @@ javac -cp "lib/*" -sourcepath src src/backend/FinanceBackend.java src/transactio
 ```
 
 ## Contributors
--[![S4dnu112](https://github.com/S4dnu112.png?size=50)](https://github.com/S4dnu112)
-[![neo-geroda](https://github.com/neo-geroda.png?size=50)](https://github.com/neo-geroda)
-[![DLJocson](https://github.com/DLJocson.png?size=50)](https://github.com/DLJocson)
-[![EmsGarbino](https://github.com/EmsGarbino.png?size=50)](https://github.com/EmsGarbino)
-[![kristinebae](https://github.com/kristinebae.png?size=50)](https://github.com/kristinebae)
-[![Felicityjoy](https://github.com/Felicityjoy.png?size=50)](https://github.com/Felicityjoy)
+<table>
+<tr>
+    <td align="center">
+        <a href="https://github.com/S4dnu112">
+            <img src="https://github.com/S4dnu112.png" width="100px;"/>
+            <br />
+            <sub><b>S4dnu112</b></sub>
+        </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/neo-geroda">
+          <img src="https://github.com/neo-geroda.png" width="100px;"/>
+          <br />
+          <sub><b>neo-geroda</b></sub>
+      </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/DLJocson">
+            <img src="https://github.com/DLJocson.png" width="100px;"/>
+            <br />
+            <sub><b>DLJocson</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/EmsGarbino">
+            <img src="https://github.com/EmsGarbino.png" width="100px;"/>
+            <br />
+            <sub><b>EmsGarbino</b></sub>
+        </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/kristinebae">
+          <img src="https://github.com/kristinebae.png" width="100px;"/>
+          <br />
+          <sub><b>kristinebae</b></sub>
+      </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/Felicityjoy">
+            <img src="https://github.com/Felicityjoy.png" width="100px;"/>
+            <br />
+            <sub><b>Fel</b></sub>
+        </a>
+    </td>
+</tr>
+</table>
+
+
 
 
 

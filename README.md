@@ -43,7 +43,7 @@ javac -cp "lib/*" -sourcepath src src/backend/FinanceBackend.java src/transactio
 ```
 
 ## Contributors
-[![S4dnu112](https://github.com/S4dnu112.png?size=50)](https://github.com/S4dnu112)
+-[![S4dnu112](https://github.com/S4dnu112.png?size=50)](https://github.com/S4dnu112)
 [![neo-geroda](https://github.com/neo-geroda.png?size=50)](https://github.com/neo-geroda)
 [![DLJocson](https://github.com/DLJocson.png?size=50)](https://github.com/DLJocson)
 [![EmsGarbino](https://github.com/EmsGarbino.png?size=50)](https://github.com/EmsGarbino)

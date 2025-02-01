@@ -108,7 +108,9 @@ public abstract class Transaction {
 
         if (start.isAfter(end))
             throw new IllegalArgumentException("Start date is after end date");
-            
+        if(ChronoUnit.DAYS.between(start, LocalDate.now()) < 0)
+            return 0;
+
         switch (recurrence) {
             case "daily":
                 return (ChronoUnit.DAYS.between(start, end) + 1) * this.baseAmount;

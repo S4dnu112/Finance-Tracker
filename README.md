@@ -24,27 +24,33 @@ PennyWise is a simple finance tracker that allows users to track their income, e
 - View transaction history
 
 ## Requirements
+> **Note:** External dependencies are already in the lib folder 
 - Sqlite
 - Java
-  > External dependencies are already in the lib folder 
 
 ## How to Run the Program
 Compile
 ```
-javac -cp "lib/*" -sourcepath src src/backend/FinanceBackend.java src/transactionModels/*.java src/frontend/*.java src/Finance_Tracker.java;
-```
+javac -cp "lib/*" -sourcepath src src/backend/FinanceBackend.java src/transactionModels/*.java src/frontend/*.java src/Finance_Tracker.java; ```
+
 Run
 ```
-java -cp "src;lib/*" Finance_Tracker
-```
+java -cp "src;lib/*" Finance_Tracker ```
+
 Combined
 ```
 javac -cp "lib/*" -sourcepath src src/backend/FinanceBackend.java src/transactionModels/*.java src/frontend/*.java src/Finance_Tracker.java; java -cp "src;lib/*" Finance_Tracker
 ```
 
 ## Contributors
-- [![DLJocson](https://github.com/DLJocson.png?size=50)](https://github.com/DLJocson)
+[![S4dnu112](https://github.com/S4dnu112.png?size=50)](https://github.com/S4dnu112)
+[![neo-geroda](https://github.com/neo-geroda.png?size=50)](https://github.com/neo-geroda)
 [![DLJocson](https://github.com/DLJocson.png?size=50)](https://github.com/DLJocson)
+[![EmsGarbino](https://github.com/EmsGarbino.png?size=50)](https://github.com/EmsGarbino)
+[![kristinebae](https://github.com/kristinebae.png?size=50)](https://github.com/kristinebae)
+[![Felicityjoy](https://github.com/Felicityjoy.png?size=50)](https://github.com/Felicityjoy)
+
+
 
 
 
